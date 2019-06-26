@@ -21,7 +21,7 @@ mongoose.connect(config.mongodb.database, config.mongodb.options).then(() => {
 let port = config.port || 4444;
 
 app.listen(port, () => {
-  console.log('server Started on port  ' + port);
+  console.log('server Started on port ' + port);
 });
 
 app.use((req, res) => {
