@@ -27,6 +27,7 @@ app.listen(port, () => {
 app.use((req, res) => {
   res.status(404).send(messagesService.noRestFound);
 });
+
 process.on('uncaughtException', function (err) {
   console.log(err);
 });
