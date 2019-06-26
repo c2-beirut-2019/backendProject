@@ -21,6 +21,8 @@ mongoose.connect(config.mongodb.database, config.mongodb.options).then(() => {
 
 let port = config.port || 4444;
 
+require('./RoutersProviders/routersProviders')(app);
+
 app.listen(port, () => {
   console.log('server Started on port ' + port);
 });
