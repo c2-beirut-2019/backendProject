@@ -7,9 +7,11 @@ let router = () => {
         newsController = require('../../Controllers/newsController')();
 
     router.route('/')
-        .get(newsController.getNews);
+        .get(validate(newsValidator.getNews), newsController.getNews)
+        .post(validate(newsValidator.addNews), newsController.addNews);
 
     router.use(globalController.validationMiddleware);
+
     return router;
 };
 module.exports = router;

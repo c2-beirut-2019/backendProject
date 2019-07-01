@@ -8,6 +8,17 @@ let paginateService = (model) => {
                 options.sort = {};
                 options.sort[queryParams.sortBy] = queryParams.sortOrder === 'asc' ? 1 : -1;
             }
+            queryParams.limit = parseInt(queryParams.limit);
+            if ((!('limit')) in queryParams || isNaN(queryParams.limit)) {
+                options.limit = 20;
+            } else {
+                options.limit = queryParams.limit;
+            }
+            if ((!('pageIndex')) in queryParams) {
+                options.skip = 0;
+            } else {
+                options.skip = (queryParams.pageIndex - 1) * options.limit;
+            }
             options.lean = true;
             if (is_populated) {
                 model.find(query, fieldsSelection, options, (err, result) => {

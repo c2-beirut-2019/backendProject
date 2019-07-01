@@ -4,7 +4,11 @@ let mongoose = require('mongoose'),
 let newsModel = new Schema({
     title: String,
     content: String,
-    image: String,
+    image: {
+        extension: String,
+        name: String,
+        data: String,
+    },
     creationDate: Date,
     __v: {type: Number, select: false}
 });
