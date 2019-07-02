@@ -4,7 +4,8 @@ let router = () => {
         router = express.Router(),
         globalController = require('../../Controllers/globalController')(),
         clientValidator = require('../../Validations/clientValidator'),
-        clientController = require('../../Controllers/clientController')();
+        clientController = require('../../Controllers/clientController')(),
+        oAuthProvider = require('../../ClientOAuth/express')();
 
     router.route('/')
         .post(validate(clientValidator.addClient), clientController.addClient);
@@ -14,6 +15,9 @@ let router = () => {
 
     router.route('/username')
         .post(validate(clientValidator.addUsernameAndPassword), clientController.addUsernameAndPassword);
+
+    router.route('/authenticate')
+        .post(validate(clientValidator.loginUserValidator), oAuthProvider.tokenProvider);
 
     router.use(globalController.validationMiddleware);
 

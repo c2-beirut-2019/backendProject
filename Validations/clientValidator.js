@@ -35,6 +35,30 @@ let clientValidator = {
             username: Joi.string().required(),
             password: Joi.string().required(),
         }
+    },
+    loginUserValidator: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            grant_type: Joi.string().required(),
+            username: Joi.string()
+                .when('grant_type', {
+                    is: 'password',
+                    then: Joi.string().required()
+                }),
+            password: Joi.string()
+                .when('grant_type', {
+                    is: 'password',
+                    then: Joi.string().required()
+                }),
+            refresh_token: Joi.string()
+                .when('grant_type', {
+                    is: 'refresh_token',
+                    then: Joi.string().required()
+                })
+        }
     }
 };
 module.exports = clientValidator;
