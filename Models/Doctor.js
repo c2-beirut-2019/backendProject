@@ -6,7 +6,7 @@ let doctorModel = new Schema({
     firstName: String,
     lastName: String,
     speciality: String,
-    diplomas: [String],
+    diplomas: String,
     activationCode: String,
     isActive: {type: Boolean, default: true},
     lastLoginDate: Date,

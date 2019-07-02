@@ -1,6 +1,7 @@
 let routersProviders = (app) => {
     require('./newsRouterProvider/newsRouterProvider')(app);
     require('./clientRouterProvider/clientRouterProvider')(app);
+    require('./doctorRouterProvider/doctorRouterProvider')(app);
 
     let healthRoute = require('../healthRoutes/healthRouter');
     let ipRoute = require('../healthRoutes/ip');
