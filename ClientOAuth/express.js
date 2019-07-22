@@ -45,13 +45,17 @@ let oAuthController = function () {
 
                             oauth.token(request, response)
                                 .then((token) => {
-                                    let auth = createTokenResponse(user, token, basicAuthBase64);
-                                    userModel.findOneAndUpdate({_id: user._id}, {
-                                        $set: {
-                                            lastLoginDate: new Date()
-                                        }
-                                    }).exec();
-                                    res.send(auth);
+                                    if (user.isActive) {
+                                        let auth = createTokenResponse(user, token, basicAuthBase64);
+                                        userModel.findOneAndUpdate({_id: user._id}, {
+                                            $set: {
+                                                lastLoginDate: new Date()
+                                            }
+                                        }).exec();
+                                        res.send(auth);
+                                    } else {
+                                        res.status(403).send(errorMessagesService.userInactive);
+                                    }
                                 })
                                 .catch((err) => {
                                     res.status(401).json(errorMessagesService.unAuthorized);

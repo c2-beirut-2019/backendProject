@@ -42,5 +42,11 @@ module.exports = {
         status: 460,
         error_code: "usernameExists",
         message: "Username exists"
+    },
+    userInactive: {
+        error: true,
+        status: 403,
+        error_code: "userInactive",
+        message: "User Inactive"
     }
 };
