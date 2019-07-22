@@ -5,7 +5,8 @@ let router = () => {
         globalController = require('../../Controllers/globalController')(),
         doctorValidator = require('../../Validations/doctorValidator'),
         doctorController = require('../../Controllers/doctorController')(),
-        oAuthProvider = require('../../DoctorOAuth/express')();
+        oAuthProvider = require('../../DoctorOAuth/express')(),
+        authenticate = require('../../ClientOAuth/authenticate');
 
     router.route('/')
         .post(validate(doctorValidator.addDoctor), doctorController.addDoctor);
@@ -18,6 +19,11 @@ let router = () => {
 
     router.route('/authenticate')
         .post(validate(doctorValidator.loginDoctorValidator), oAuthProvider.tokenProvider);
+
+    router.use('/', authenticate());
+
+    router.route('/list')
+        .get(doctorController.getDoctorsList);
 
     router.use(globalController.validationMiddleware);
 

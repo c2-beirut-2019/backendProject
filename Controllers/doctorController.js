@@ -1,5 +1,6 @@
 let Controller = () => {
     let messagesService = require('../Services/messagesService');
+    let doctorsService = require('../Services/doctorsService');
     let doctorOauth = require('../DoctorOAuth/addDoctor')();
 
     let addDoctor = (req, res) => {
@@ -32,10 +33,19 @@ let Controller = () => {
         });
     };
 
+    let getDoctorsList = (req, res) => {
+        doctorsService().getDoctorsList().then((result) => {
+            res.status(200).send(result);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         addDoctor: addDoctor,
         validateAccessCode: validateAccessCode,
-        addUsernameAndPassword: addUsernameAndPassword
+        addUsernameAndPassword: addUsernameAndPassword,
+        getDoctorsList:getDoctorsList
     }
 };
 module.exports = Controller;
