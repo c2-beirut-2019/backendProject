@@ -62,9 +62,10 @@ let paginateService = (model) => {
         });
     };
 
-    let getAggregationData = (aggregation = [], AggOptions = {}, fieldsSelection = null) => {
+    let getAggregationData = (aggregation = [], AggOptions = {}, fieldsSelection = null, predefinedSearchFields = []) => {
         return new bluebirdPromise((resolve, reject) => {
             let options = {};
+            let matchQuery = {};
             options.limit = parseInt(options.limit);
             if ((!('limit')) in AggOptions || isNaN(AggOptions.limit)) {
                 options.limit = 20;
@@ -83,7 +84,34 @@ let paginateService = (model) => {
             if (fieldsSelection) {
                 aggregation.push({$project: fieldsSelection});
             }
+            if (predefinedSearchFields && predefinedSearchFields.length > 0 &&
+                AggOptions.search && AggOptions.search.length > 0 &&
+                AggOptions.searchFields && AggOptions.searchFields.length > 0) {
+                let searchQuery = [], searchFields = AggOptions.searchFields.split(',');
+                AggOptions.search = decodeURIComponent(AggOptions.search);
+                searchFields.forEach((key) => {
+                    if (predefinedSearchFields.indexOf(key) > -1) {
+                        searchQuery.push({[key]: {$regex: AggOptions.search, $options: "i"}});
+                    }
+                });
+                if (searchQuery.length > 0) {
+                    aggregation.push({$match: {$or: searchQuery}});
+                }
+                if ((searchQuery.length > 0 && 'columnSearch' in AggOptions && Object.keys(AggOptions.columnSearch).length > 0)){
+                    matchQuery = {$match: {$and: [{$and: [AggOptions.columnSearch]},{$or: searchQuery}]}};
+                }
+            }
             aggregation.push({$sort: options.sort});
+            let optionsArray = [];
+            if (matchQuery && Object.keys(matchQuery).length > 0) aggregation.push(matchQuery);
+            optionsArray.push({$skip: options.skip});
+            optionsArray.push({$limit: parseInt(options.limit)});
+            aggregation.push({
+                $facet: {
+                    metadata: [{$count: "total"}],
+                    data: optionsArray // add projection here wish you re-shape the docs
+                }
+            });
             model.aggregate(aggregation, (err, result) => {
                 if (err) {
                     reject(err);

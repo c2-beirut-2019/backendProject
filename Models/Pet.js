@@ -16,7 +16,6 @@ let petModel = new Schema({
     },
     name: String,
     color: String,
-    lastLoginDate: Date,
     registrationDate: Date,
     dateOfBirth: Date,
     isToAdopt: {type: Boolean, default: false},
