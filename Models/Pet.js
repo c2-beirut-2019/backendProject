@@ -15,6 +15,7 @@ let petModel = new Schema({
         ref: 'User'
     },
     name: String,
+    image:{},
     color: String,
     registrationDate: Date,
     dateOfBirth: Date,

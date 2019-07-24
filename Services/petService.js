@@ -71,6 +71,7 @@ let Service = () => {
                     if (specie) {
                         let record = new Pet({
                             name: body.name,
+                            image: body.image,
                             specie: specie._id,
                             category: specie.category,
                             color: body.color,
@@ -102,6 +103,7 @@ let Service = () => {
                     if (specie) {
                         let record = new Pet({
                             name: body.name,
+                            image: body.image,
                             specie: specie._id,
                             category: specie.category,
                             color: body.color,
