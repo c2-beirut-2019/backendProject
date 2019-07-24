@@ -8,6 +8,7 @@ let Service = () => {
     let getPetsToAdopt = (query, page, limit, sortBy, sortOrder, search, specie, category) => {
         return new blueBirdPromise((resolve, reject) => {
             let aggregation = [
+                {$match: query},
                 {$lookup: {from: 'animal_species', localField: 'specie', foreignField: '_id', as: 'specie'}},
                 {$unwind: {path: '$specie', preserveNullAndEmptyArrays: true}},
                 {$lookup: {from: 'animal_categories', localField: 'category', foreignField: '_id', as: 'category'}},
@@ -75,7 +76,7 @@ let Service = () => {
                             color: body.color,
                             dateOfBirth: body.dateOfBirth,
                             registrationDate: new Date(),
-                            isToAdopt: true
+                            isToAdopt: true,
                         });
                         record.save(function (err) {
                             if (err) {
@@ -92,9 +93,110 @@ let Service = () => {
         });
     };
 
+    let addClientPet = (body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            AnimalSpecies.findById(body.specie, function (err, specie) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (specie) {
+                        let record = new Pet({
+                            name: body.name,
+                            specie: specie._id,
+                            category: specie.category,
+                            color: body.color,
+                            dateOfBirth: body.dateOfBirth,
+                            registrationDate: new Date(),
+                            owner: body.owner
+                        });
+                        record.save(function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve()
+                            }
+                        })
+                    } else {
+                        reject('not_found');
+                    }
+                }
+            });
+        });
+    };
+
+    let getClientPets = () => {
+        return new blueBirdPromise((resolve, reject) => {
+            let aggregation = [
+                {$match: {isToAdopt: false, isAdopted: false}},
+                {$lookup: {from: 'animal_species', localField: 'specie', foreignField: '_id', as: 'specie'}},
+                {$unwind: {path: '$specie', preserveNullAndEmptyArrays: true}},
+                {$lookup: {from: 'animal_categories', localField: 'category', foreignField: '_id', as: 'category'}},
+                {$unwind: {path: '$category', preserveNullAndEmptyArrays: true}},
+                {$lookup: {from: 'users', localField: 'owner', foreignField: '_id', as: 'owner'}},
+                {$unwind: {path: '$owner', preserveNullAndEmptyArrays: true}},
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        color: 1,
+                        registrationDate: 1,
+                        dateOfBirth: 1,
+                        category_name: '$category.name',
+                        category_id: '$category._id',
+                        specie_name: '$specie.name',
+                        specie_id: '$specie._id',
+                        owner_firstName: '$owner.firstName',
+                        owner_lastName: '$owner.lastName',
+                        owner_phoneNumber: '$owner.phoneNumber',
+                        owner_emergencyPerson: '$owner.emergencyPerson',
+                        owner_emergencyNumber: '$owner.emergencyNumber',
+                    }
+                }
+            ];
+            Pet.aggregate(aggregation).then((result) => {
+                resolve(result);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    };
+
+    let getLoggedInUserPets = (ownerID) => {
+        return new blueBirdPromise((resolve, reject) => {
+            let aggregation = [
+                {$match: {isToAdopt: false, isAdopted: false, owner: mongoose.Types.ObjectId(ownerID)}},
+                {$lookup: {from: 'animal_species', localField: 'specie', foreignField: '_id', as: 'specie'}},
+                {$unwind: {path: '$specie', preserveNullAndEmptyArrays: true}},
+                {$lookup: {from: 'animal_categories', localField: 'category', foreignField: '_id', as: 'category'}},
+                {$unwind: {path: '$category', preserveNullAndEmptyArrays: true}},
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        color: 1,
+                        registrationDate: 1,
+                        dateOfBirth: 1,
+                        category_name: '$category.name',
+                        category_id: '$category._id',
+                        specie_name: '$specie.name',
+                        specie_id: '$specie._id'
+                    }
+                }
+            ];
+            Pet.aggregate(aggregation).then((result) => {
+                resolve(result);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    };
+
     return {
         getPetsToAdopt: getPetsToAdopt,
-        addPetForAdoption: addPetForAdoption
+        addPetForAdoption: addPetForAdoption,
+        addClientPet: addClientPet,
+        getClientPets: getClientPets,
+        getLoggedInUserPets:getLoggedInUserPets
     }
 };
 module.exports = Service;
