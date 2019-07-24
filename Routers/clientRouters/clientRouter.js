@@ -8,6 +8,7 @@ let router = () => {
         oAuthProvider = require('../../ClientOAuth/express')();
 
     router.route('/')
+        .get(clientController.getUsers)
         .post(validate(clientValidator.addClient), clientController.addClient);
 
     router.route('/code')

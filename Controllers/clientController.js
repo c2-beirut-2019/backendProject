@@ -1,5 +1,6 @@
 let Controller = () => {
     let messagesService = require('../Services/messagesService');
+    let userService = require('../Services/userService')();
     let clientOauth = require('../ClientOAuth/addUser')();
 
     let addClient = (req, res) => {
@@ -32,8 +33,17 @@ let Controller = () => {
         });
     };
 
+    let getUsers = (req, res) => {
+        userService.getUsers().then((result) => {
+            res.status(200).send(result);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         addClient: addClient,
+        getUsers: getUsers,
         validateAccessCode: validateAccessCode,
         addUsernameAndPassword: addUsernameAndPassword
     }
