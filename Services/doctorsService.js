@@ -22,8 +22,27 @@ let doctorsService = () => {
         });
     };
 
+    let getDoctors = () => {
+        return new blueBirdPromise((resolve, reject) => {
+            let aggregation = [
+                {
+                    $project: {
+                        password: 0,
+                        __v: 0
+                    }
+                }
+            ];
+            Doctor.aggregate(aggregation).then((result) => {
+                resolve(result);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    };
+
     return {
-        getDoctorsList: getDoctorsList
+        getDoctorsList: getDoctorsList,
+        getDoctors: getDoctors
     }
 };
 module.exports = doctorsService;

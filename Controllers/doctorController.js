@@ -41,11 +41,20 @@ let Controller = () => {
         });
     };
 
+    let getDoctors = (req, res) => {
+        doctorsService().getDoctors().then((result) => {
+            res.status(200).send(result);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         addDoctor: addDoctor,
         validateAccessCode: validateAccessCode,
         addUsernameAndPassword: addUsernameAndPassword,
-        getDoctorsList:getDoctorsList
+        getDoctorsList: getDoctorsList,
+        getDoctors: getDoctors
     }
 };
 module.exports = Controller;

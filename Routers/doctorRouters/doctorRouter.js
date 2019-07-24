@@ -9,6 +9,7 @@ let router = () => {
         authenticate = require('../../ClientOAuth/authenticate');
 
     router.route('/')
+        .get(doctorController.getDoctors)
         .post(validate(doctorValidator.addDoctor), doctorController.addDoctor);
 
     router.route('/code')
