@@ -3,7 +3,7 @@ let mongoose = require('mongoose'),
 
 let appointmentTypeModel = new Schema({
     name: String,
-    procedureTime: String,
+    procedureTime: Number,
     __v: {type: Number, select: false}
 });
 module.exports = mongoose.model('Appointment_Type', appointmentTypeModel);
