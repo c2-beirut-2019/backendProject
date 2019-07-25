@@ -49,12 +49,34 @@ let Controller = () => {
         });
     };
 
+    let addDoctorsSchedule = (req, res) => {
+        doctorsService().addDoctorsSchedule(req.body, req.query.id).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'scheduleAlreadyExists') {
+                res.status(460).send(messagesService.scheduleAlreadyExists);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
+    let getDoctorsSchedule = (req, res) => {
+        doctorsService().getDoctorsSchedule(req.query.id).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         addDoctor: addDoctor,
         validateAccessCode: validateAccessCode,
         addUsernameAndPassword: addUsernameAndPassword,
         getDoctorsList: getDoctorsList,
-        getDoctors: getDoctors
+        getDoctors: getDoctors,
+        addDoctorsSchedule: addDoctorsSchedule,
+        getDoctorsSchedule: getDoctorsSchedule
     }
 };
 module.exports = Controller;

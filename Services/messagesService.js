@@ -48,5 +48,11 @@ module.exports = {
         status: 403,
         error_code: "userInactive",
         message: "User Inactive"
+    },
+    scheduleAlreadyExists: {
+        error: true,
+        status: 460,
+        error_code: "scheduleAlreadyExists",
+        message: "This day already exists in the doctor's schedule"
     }
 };

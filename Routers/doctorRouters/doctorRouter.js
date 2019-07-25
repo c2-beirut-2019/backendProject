@@ -18,6 +18,10 @@ let router = () => {
     router.route('/username')
         .post(validate(doctorValidator.addUsernameAndPassword), doctorController.addUsernameAndPassword);
 
+    router.route('/schedule')
+        .get(validate(doctorValidator.getDoctorSchedule), doctorController.getDoctorsSchedule)
+        .post(validate(doctorValidator.addDoctorsSchedule), doctorController.addDoctorsSchedule);
+
     router.route('/authenticate')
         .post(validate(doctorValidator.loginDoctorValidator), oAuthProvider.tokenProvider);
 

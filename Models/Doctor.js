@@ -14,6 +14,7 @@ let doctorModel = new Schema({
     dateOfBirth: Date,
     phoneNumber: String,
     password: String,
+    profile_pic: String,
     __v: {type: Number, select: false}
 });
 module.exports = mongoose.model('Doctor', doctorModel);

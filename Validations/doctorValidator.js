@@ -1,4 +1,5 @@
 let Joi = require('joi');
+Joi.objectID = require('joi-objectid')(Joi);
 
 let clientValidator = {
     addDoctor: {
@@ -58,6 +59,26 @@ let clientValidator = {
                     then: Joi.string().required()
                 })
         }
-    }
+    },
+    getDoctorSchedule: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        query: {
+            id: Joi.objectID().required()
+        }
+    },
+    addDoctorsSchedule: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            day: Joi.number().required(),
+            from_time: Joi.string().required(),
+            to_time: Joi.string().required(),
+        }
+    },
 };
 module.exports = clientValidator;
