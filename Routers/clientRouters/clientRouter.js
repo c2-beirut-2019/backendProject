@@ -5,7 +5,8 @@ let router = () => {
         globalController = require('../../Controllers/globalController')(),
         clientValidator = require('../../Validations/clientValidator'),
         clientController = require('../../Controllers/clientController')(),
-        oAuthProvider = require('../../ClientOAuth/express')();
+        oAuthProvider = require('../../ClientOAuth/express')(),
+        authenticate = require('../../ClientOAuth/authenticate');
 
     router.route('/')
         .get(clientController.getUsers)
@@ -19,6 +20,12 @@ let router = () => {
 
     router.route('/authenticate')
         .post(validate(clientValidator.loginUserValidator), oAuthProvider.tokenProvider);
+
+    router.use('/', authenticate());
+
+    router.route('/profile')
+        .get(clientController.getUserProfile)
+        .post(validate(clientValidator.updateUserProfile), clientController.updateUserProfile);
 
     router.use(globalController.validationMiddleware);
 

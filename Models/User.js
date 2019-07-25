@@ -15,6 +15,7 @@ let userModel = new Schema({
     emergencyPerson: String,
     emergencyNumber: String,
     password: String,
+    profilePic: {},
     __v: {type: Number, select: false}
 });
 module.exports = mongoose.model('User', userModel);

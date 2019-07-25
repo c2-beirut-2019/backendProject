@@ -59,6 +59,25 @@ let clientValidator = {
                     then: Joi.string().required()
                 })
         }
-    }
+    },
+    updateUserProfile: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            firstName: Joi.string().optional(),
+            lastName: Joi.string().optional(),
+            dateOfBirth: Joi.date().optional().allow(null),
+            phoneNumber: Joi.string().optional(),
+            emergencyPerson: Joi.string().optional(),
+            emergencyNumber: Joi.string().optional(),
+            profilePic: Joi.object({
+                extension: Joi.string().required(),
+                name: Joi.string().required(),
+                data: Joi.string().required()
+            }).optional()
+        }
+    },
 };
 module.exports = clientValidator;

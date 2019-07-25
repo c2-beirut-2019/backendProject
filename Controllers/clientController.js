@@ -41,11 +41,30 @@ let Controller = () => {
         });
     };
 
+    let getUserProfile = (req, res) => {
+        userService.getUserProfile(req.user._id).then((result) => {
+            res.status(200).send(result);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let updateUserProfile = (req, res) => {
+        userService.updateUserProfile(req.user._id, req.body).then((result) => {
+            res.status(200).send(result);
+        }).catch((err) => {
+            console.log('err',err);
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         addClient: addClient,
         getUsers: getUsers,
         validateAccessCode: validateAccessCode,
-        addUsernameAndPassword: addUsernameAndPassword
+        addUsernameAndPassword: addUsernameAndPassword,
+        getUserProfile: getUserProfile,
+        updateUserProfile: updateUserProfile
     }
 };
 module.exports = Controller;
