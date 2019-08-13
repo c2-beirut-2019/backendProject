@@ -54,5 +54,17 @@ module.exports = {
         status: 460,
         error_code: "scheduleAlreadyExists",
         message: "This day already exists in the doctor's schedule"
+    },
+    appointmentExists: {
+        error: true,
+        status: 460,
+        error_code: "appointmentExists",
+        message: "This doctor already has an appointment by that time"
+    },
+    doctorNotAvailable: {
+        error: true,
+        status: 460,
+        error_code: "doctorNotAvailable",
+        message: "This doctor is not available by that time"
     }
 };
