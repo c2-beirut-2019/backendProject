@@ -2,6 +2,7 @@ let userService = () => {
     let blueBirdPromise = require('bluebird');
     let User = require('../Models/User');
     let mongoose = require('mongoose');
+    const uploadService = require('../Services/uploadService')();
 
     let getUsers = () => {
         return new blueBirdPromise((resolve, reject) => {
@@ -51,13 +52,28 @@ let userService = () => {
 
     let updateUserProfile = (user, body) => {
         return new blueBirdPromise((resolve, reject) => {
-            User.findOneAndUpdate({_id: user}, {$set: body}, {new: true}, function (err, result) {
-                if (err) {
+            if (body.profilePic) {
+                uploadService.uploadFile(body.profilePic).then((link) => {
+                    body.profilePic = link;
+                    User.findOneAndUpdate({_id: user}, {$set: body}, {new: true}, function (err, result) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    })
+                }).catch((err) => {
                     reject(err);
-                } else {
-                    resolve(result);
-                }
-            })
+                })
+            } else {
+                User.findOneAndUpdate({_id: user}, {$set: body}, {new: true}, function (err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                })
+            }
         });
     };
 

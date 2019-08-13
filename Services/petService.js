@@ -3,6 +3,7 @@ let Service = () => {
     let mongoose = require('mongoose');
     let Pet = require('../Models/Pet');
     let paginateService = require('./paginateService')(Pet);
+    let uploadService = require('./uploadService')();
     let AnimalSpecies = require('../Models/AnimalSpecies');
 
     let getPetsToAdopt = (query, page, limit, sortBy, sortOrder, search, specie, category) => {
@@ -18,6 +19,7 @@ let Service = () => {
                         _id: 1,
                         name: 1,
                         color: 1,
+                        image: 1,
                         registrationDate: 1,
                         dateOfBirth: 1,
                         category_name: '$category.name',
@@ -69,7 +71,7 @@ let Service = () => {
                     reject(err);
                 } else {
                     if (specie) {
-                        let record = new Pet({
+                        let newPet = {
                             name: body.name,
                             image: body.image,
                             specie: specie._id,
@@ -77,15 +79,32 @@ let Service = () => {
                             color: body.color,
                             dateOfBirth: body.dateOfBirth,
                             registrationDate: new Date(),
-                            isToAdopt: true,
-                        });
-                        record.save(function (err) {
-                            if (err) {
+                            isToAdopt: true
+                        };
+                        if (body.image) {
+                            uploadService.uploadFile(body.image).then((link) => {
+                                newPet.image = link;
+                                let record = new Pet(newPet);
+                                record.save(function (err) {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        resolve()
+                                    }
+                                })
+                            }).catch((err) => {
                                 reject(err);
-                            } else {
-                                resolve()
-                            }
-                        })
+                            })
+                        } else {
+                            let record = new Pet(newPet);
+                            record.save(function (err) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve()
+                                }
+                            })
+                        }
                     } else {
                         reject('not_found');
                     }
@@ -198,7 +217,7 @@ let Service = () => {
         addPetForAdoption: addPetForAdoption,
         addClientPet: addClientPet,
         getClientPets: getClientPets,
-        getLoggedInUserPets:getLoggedInUserPets
+        getLoggedInUserPets: getLoggedInUserPets
     }
 };
 module.exports = Service;
