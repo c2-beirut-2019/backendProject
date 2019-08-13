@@ -120,7 +120,7 @@ let Service = () => {
                     reject(err);
                 } else {
                     if (specie) {
-                        let record = new Pet({
+                        let newPet = {
                             name: body.name,
                             image: body.image,
                             specie: specie._id,
@@ -129,14 +129,31 @@ let Service = () => {
                             dateOfBirth: body.dateOfBirth,
                             registrationDate: new Date(),
                             owner: body.owner
-                        });
-                        record.save(function (err) {
-                            if (err) {
+                        };
+                        if (body.image) {
+                            uploadService.uploadFile(body.image).then((link) => {
+                                newPet.image = link;
+                                let record = new Pet(newPet);
+                                record.save(function (err) {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        resolve()
+                                    }
+                                })
+                            }).catch((err) => {
                                 reject(err);
-                            } else {
-                                resolve()
-                            }
-                        })
+                            })
+                        } else {
+                            let record = new Pet(newPet);
+                            record.save(function (err) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve()
+                                }
+                            })
+                        }
                     } else {
                         reject('not_found');
                     }
