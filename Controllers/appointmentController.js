@@ -6,7 +6,6 @@ let Controller = () => {
         appointmentService.addAppointment(req.user._id, req.body).then(() => {
             res.status(200).send();
         }).catch((err) => {
-            console.log('errr', err);
             if (err === 'not_found') {
                 res.status(404).send(messagesService.not_found);
             } else if (err === 'appointment_exists') {
@@ -19,8 +18,46 @@ let Controller = () => {
         });
     };
 
+    let getAppointments = (req, res) => {
+        appointmentService.getAppointments(req.user._id, req.query.id).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let getUserAppointment = (req, res) => {
+        appointmentService.getAppointmentsByType(req.user._id, req.query.doctorID, req.query.pet, req.query.appointmentType, req.query.search, req.query.sortBy, req.query.sortOrder).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let getDoctorsAppointment = (req, res) => {
+        appointmentService.getAppointmentsByType(req.query.user, req.doctor._id, req.query.pet, req.query.appointmentType, req.query.search, req.query.sortBy, req.query.sortOrder).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let getAllAppointments = (req, res) => {
+        appointmentService.getAppointmentsByType(null, null, null, null, null, true).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+
     return {
-        addAppointment: addAppointment
+        addAppointment: addAppointment,
+        getAppointments: getAppointments,
+        getUserAppointment: getUserAppointment,
+        getDoctorsAppointment: getDoctorsAppointment,
+        getAllAppointments: getAllAppointments
+
     }
 };
 module.exports = Controller;
