@@ -4,6 +4,7 @@ let doctorsService = () => {
     let DoctorSchedule = require('../Models/DoctorsSchedule');
     let moment = require('moment');
     let mongoose = require('mongoose');
+    let uploadService = require('../Services/uploadService')();
 
     let getDoctorsList = () => {
         return new blueBirdPromise((resolve, reject) => {
@@ -140,11 +141,61 @@ let doctorsService = () => {
         });
     };
 
+    let getDoctorProfile = (doctor) => {
+        return new blueBirdPromise((resolve, reject) => {
+            let aggregation = [
+                {$match: {_id: mongoose.Types.ObjectId(doctor)}},
+                {
+                    $project: {
+                        password: 0,
+                        __v: 0,
+                        isActive: 0,
+                        lastLoginDate: 0
+                    }
+                }
+            ];
+            Doctor.aggregate(aggregation).then((result) => {
+                resolve(result[0]);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    };
+
+    let updateDoctorProfile = (user, body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            if (body.profilePic) {
+                uploadService.uploadFile(body.profilePic).then((link) => {
+                    body.profilePic = link;
+                    Doctor.findOneAndUpdate({_id: user}, {$set: body}, {new: true}, function (err, result) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    })
+                }).catch((err) => {
+                    reject(err);
+                })
+            } else {
+                Doctor.findOneAndUpdate({_id: user}, {$set: body}, {new: true}, function (err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                })
+            }
+        });
+    };
+
     return {
         getDoctorsList: getDoctorsList,
         getDoctors: getDoctors,
         addDoctorsSchedule: addDoctorsSchedule,
-        getDoctorsSchedule: getDoctorsSchedule
+        getDoctorsSchedule: getDoctorsSchedule,
+        getDoctorProfile: getDoctorProfile,
+        updateDoctorProfile: updateDoctorProfile
     }
 };
 module.exports = doctorsService;

@@ -80,5 +80,21 @@ let clientValidator = {
             to_time: Joi.string().required(),
         }
     },
+    updateDoctorProfile: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            firstName: Joi.string().optional(),
+            lastName: Joi.string().optional(),
+            phoneNumber: Joi.string().optional(),
+            profilePic: Joi.object({
+                extension: Joi.string().required(),
+                name: Joi.string().required(),
+                data: Joi.string().required()
+            }).optional()
+        }
+    },
 };
 module.exports = clientValidator;

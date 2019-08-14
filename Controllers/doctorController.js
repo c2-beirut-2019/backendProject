@@ -69,6 +69,22 @@ let Controller = () => {
         });
     };
 
+    let getDoctorProfile = (req, res) => {
+        doctorsService().getDoctorProfile(req.doctor._id).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let updateDoctorProfile = (req, res) => {
+        doctorsService().updateDoctorProfile(req.doctor._id, req.body).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         addDoctor: addDoctor,
         validateAccessCode: validateAccessCode,
@@ -76,7 +92,9 @@ let Controller = () => {
         getDoctorsList: getDoctorsList,
         getDoctors: getDoctors,
         addDoctorsSchedule: addDoctorsSchedule,
-        getDoctorsSchedule: getDoctorsSchedule
+        getDoctorsSchedule: getDoctorsSchedule,
+        getDoctorProfile: getDoctorProfile,
+        updateDoctorProfile: updateDoctorProfile
     }
 };
 module.exports = Controller;
