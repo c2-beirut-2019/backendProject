@@ -7,7 +7,8 @@ let productModel = new Schema({
     price: Number,
     quantityAvailable: Number,
     colorsAvailable: [String],
-    images: [],
+    createDate: Date,
+    images: [String],
     __v: {type: Number, select: false}
 });
 module.exports = mongoose.model('Product', productModel);

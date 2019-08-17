@@ -7,6 +7,7 @@ let routersProviders = (app) => {
     require('./petRouterProvider/petRouterProvider')(app);
     require('./appointmentTypeRouterProvider/appointmentTypeRouterProvider')(app);
     require('./appointmentRouterProvider/appointmentRouterProvider')(app);
+    require('./productRouterProvider/productRouterProvider')(app);
 
     let healthRoute = require('../healthRoutes/healthRouter');
     let ipRoute = require('../healthRoutes/ip');
