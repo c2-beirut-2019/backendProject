@@ -10,6 +10,9 @@ let router = () => {
         .get(animalCategoryController.getAnimalCategory)
         .post(validate(animalCategoryValidator.addAnimalCategory), animalCategoryController.addAnimalCategory);
 
+    router.route('/:id')
+        .delete(animalCategoryController.deleteAnimalCategory);
+
     router.use(globalController.validationMiddleware);
 
     return router;
