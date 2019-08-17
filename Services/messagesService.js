@@ -78,5 +78,23 @@ module.exports = {
         status: 460,
         error_code: "cannotDeleteSpecie",
         message: "You cannot delete this specie because of pets attached to it"
+    },
+    cannotDeleteType: {
+        error: true,
+        status: 460,
+        error_code: "cannotDeleteType",
+        message: "You cannot delete this type because of appointments attached to it"
+    },
+    cannotDeleteClientPet: {
+        error: true,
+        status: 460,
+        error_code: "cannotDeleteClientPet",
+        message: "You cannot delete this pet because of future appointments attached to it"
+    },
+    cannotUpdateClientPet: {
+        error: true,
+        status: 460,
+        error_code: "cannotUpdateClientPet",
+        message: "You cannot update the owner of the pet because of future appointments attached to it"
     }
 };

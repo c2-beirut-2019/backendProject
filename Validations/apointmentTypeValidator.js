@@ -11,6 +11,16 @@ let appointmentTypeValidator = {
             name: Joi.string().required(),
             procedureTime: Joi.number().required(),
         }
+    },
+    updateAppointmentType: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            name: Joi.string().required(),
+            procedureTime: Joi.number().required(),
+        }
     }
 };
 module.exports = appointmentTypeValidator;

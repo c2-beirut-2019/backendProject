@@ -10,6 +10,10 @@ let router = () => {
         .get(appointmentTypeController.getAppointmentTypes)
         .post(validate(appointmentTypeValidator.addAppointmentType), appointmentTypeController.addAppointmentTypes);
 
+    router.route('/:id')
+        .put(validate(appointmentTypeValidator.updateAppointmentType), appointmentTypeController.updateAppointmentTypes)
+        .delete(appointmentTypeController.deleteAppointmentTypes);
+
     router.use(globalController.validationMiddleware);
 
     return router;
