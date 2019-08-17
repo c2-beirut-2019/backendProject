@@ -18,9 +18,27 @@ let newsController = () => {
         });
     };
 
+    let updateNews = (req, res) => {
+        newsService.updateNews(req.params.id, req.body).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let deleteNews = (req, res) => {
+        newsService.deleteNews(req.params.id).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         getNews: getNews,
-        addNews: addNews
+        addNews: addNews,
+        updateNews: updateNews,
+        deleteNews: deleteNews
     }
 };
 module.exports = newsController;

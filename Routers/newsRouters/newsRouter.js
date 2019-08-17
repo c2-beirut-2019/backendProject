@@ -10,6 +10,10 @@ let router = () => {
         .get(validate(newsValidator.getNews), newsController.getNews)
         .post(validate(newsValidator.addNews), newsController.addNews);
 
+    router.route('/:id')
+        .put(validate(newsValidator.updateNews), newsController.updateNews)
+        .delete(newsController.deleteNews);
+
     router.use(globalController.validationMiddleware);
 
     return router;
