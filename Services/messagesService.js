@@ -66,5 +66,17 @@ module.exports = {
         status: 460,
         error_code: "doctorNotAvailable",
         message: "This doctor is not available by that time"
+    },
+    cannotDeleteCategory: {
+        error: true,
+        status: 460,
+        error_code: "cannotDeleteCategory",
+        message: "You cannot delete this category because of species attached to it"
+    },
+    cannotDeleteSpecie: {
+        error: true,
+        status: 460,
+        error_code: "cannotDeleteSpecie",
+        message: "You cannot delete this specie because of pets attached to it"
     }
 };

@@ -2,6 +2,7 @@ let Service = () => {
     let blueBirdPromise = require('bluebird');
     let mongoose = require('mongoose');
     let AnimalSpecie = require('../Models/AnimalSpecies');
+    let Pet = require('../Models/Pet');
 
     let getAnimalSpecies = () => {
         return new blueBirdPromise((resolve, reject) => {
@@ -42,9 +43,32 @@ let Service = () => {
         });
     };
 
+    let deleteAnimalSpecie = (id) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Pet.findOne({specie: id}, function (err, specie) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (specie) {
+                        reject('cannotDeleteSpecie');
+                    } else {
+                        AnimalSpecie.findOneAndRemove({_id: id}, function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        })
+                    }
+                }
+            });
+        });
+    };
+
     return {
         getAnimalSpecies: getAnimalSpecies,
-        addAnimalSpecie: addAnimalSpecie
+        addAnimalSpecie: addAnimalSpecie,
+        deleteAnimalSpecie: deleteAnimalSpecie
     }
 };
 module.exports = Service;

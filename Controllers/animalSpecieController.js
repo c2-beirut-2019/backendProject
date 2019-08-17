@@ -18,9 +18,22 @@ let Controller = () => {
         });
     };
 
+    let deleteAnimalSpecie = (req, res) => {
+        AnimalSpecieService.deleteAnimalSpecie(req.params.id).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'cannotDeleteSpecie') {
+                res.status(460).send(messagesService.cannotDeleteSpecie);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
     return {
         getAnimalSpecies: getAnimalSpecies,
-        addAnimalSpecie: addAnimalSpecie
+        addAnimalSpecie: addAnimalSpecie,
+        deleteAnimalSpecie: deleteAnimalSpecie
     }
 };
 module.exports = Controller;
