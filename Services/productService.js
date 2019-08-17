@@ -24,7 +24,6 @@ let Service = () => {
                 //         query = {'colorsAvailable.$': color};
                 //     }
                 // }
-                console.log('query', query);
                 let aggregation = [
                     {$match: query},
                     {
@@ -135,9 +134,60 @@ let Service = () => {
         });
     };
 
+    let updateProduct = (id, body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            if (body.images && body.images.length > 0) {
+                let linkImages = [];
+                async.each(body.images, (image, callback) => {
+                    uploadService.uploadFile(image).then((link) => {
+                        linkImages.push(link);
+                        callback();
+                    }).catch((err) => {
+                        reject(err);
+                    })
+                }, (err) => {
+                    if (err) {
+                        reject();
+                    } else {
+                        body.images = linkImages;
+                        Product.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        });
+                    }
+                });
+            } else {
+                Product.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            }
+        });
+    };
+
+    let deleteProduct = (id) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Product.findOneAndRemove({_id: id}, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            })
+        });
+    };
+
     return {
         getProducts: getProducts,
-        addProduct: addProduct
+        addProduct: addProduct,
+        updateProduct: updateProduct,
+        deleteProduct: deleteProduct
     }
 };
 module.exports = Service;

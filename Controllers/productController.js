@@ -20,9 +20,27 @@ let Controller = () => {
         });
     };
 
+    let updateProduct = (req, res) => {
+        productService.updateProduct(req.params.id, req.body).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let deleteProduct = (req, res) => {
+        productService.deleteProduct(req.params.id).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         getProducts: getProducts,
-        addProduct: addProduct
+        addProduct: addProduct,
+        updateProduct: updateProduct,
+        deleteProduct: deleteProduct
     }
 };
 module.exports = Controller;
