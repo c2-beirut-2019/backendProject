@@ -50,12 +50,68 @@ let Controller = () => {
         });
     };
 
+    let updatePetForAdoption = (req, res) => {
+        petService.updatePetForAdoption(req.params.id, req.body).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'not_found') {
+                res.status(404).send(messagesService.not_found);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
+    let deletePetForAdoption = (req, res) => {
+        petService.deletePetForAdoption(req.params.id).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'not_found') {
+                res.status(404).send(messagesService.not_found);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
+    let updateClientPet = (req, res) => {
+        petService.updateClientPet(req.params.id, req.body).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'cannotUpdateClientPet') {
+                res.status(460).send(messagesService.cannotUpdateClientPet);
+            } else if (err === 'not_found') {
+                res.status(404).send(messagesService.not_found);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
+    let deleteClientPet = (req, res) => {
+        petService.deleteClientPet(req.params.id).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'cannotDeleteClientPet') {
+                res.status(460).send(messagesService.cannotDeleteClientPet);
+            } else if (err === 'not_found') {
+                res.status(404).send(messagesService.not_found);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
     return {
         getPetsToAdopt: getPetsToAdopt,
         addPetToAdopt: addPetToAdopt,
         addClientPet: addClientPet,
         getClientPets: getClientPets,
-        getLoginUserPets: getLoginUserPets
+        getLoginUserPets: getLoginUserPets,
+        updatePetForAdoption: updatePetForAdoption,
+        deletePetForAdoption: deletePetForAdoption,
+        updateClientPet: updateClientPet,
+        deleteClientPet: deleteClientPet
     }
 };
 module.exports = Controller;

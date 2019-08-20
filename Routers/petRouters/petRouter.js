@@ -11,9 +11,17 @@ let router = () => {
         .get(petController.getClientPets)
         .post(validate(petValidator.addClientPet), petController.addClientPet);
 
+    router.route('/:id')
+        .put(validate(petValidator.updateClientPet), petController.updateClientPet)
+        .delete(petController.deleteClientPet);
+
     router.route('/toAdopt')
         .get(petController.getPetsToAdopt)
         .post(validate(petValidator.addPetToAdopt), petController.addPetToAdopt);
+
+    router.route('/toAdopt/:id')
+        .put(validate(petValidator.updatePetToAdopt), petController.updatePetForAdoption)
+        .delete(petController.deletePetForAdoption);
 
     router.use('/', authenticate());
 

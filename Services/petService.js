@@ -5,6 +5,7 @@ let Service = () => {
     let paginateService = require('./paginateService')(Pet);
     let uploadService = require('./uploadService')();
     let AnimalSpecies = require('../Models/AnimalSpecies');
+    let Appointment = require('../Models/Appointment');
 
     let getPetsToAdopt = (query, page, limit, sortBy, sortOrder, search, specie, category) => {
         return new blueBirdPromise((resolve, reject) => {
@@ -229,12 +230,184 @@ let Service = () => {
         });
     };
 
+    let updatePetForAdoption = (id, body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            AnimalSpecies.findById(body.specie, function (err, specie) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (specie) {
+                        body.specie = specie._id;
+                        body.category = specie.category;
+                        if (body.image) {
+                            uploadService.uploadFile(body.image).then((link) => {
+                                body.image = link;
+                                Pet.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        resolve();
+                                    }
+                                })
+                            }).catch((err) => {
+                                reject(err);
+                            })
+                        } else {
+                            Pet.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve();
+                                }
+                            });
+                        }
+                    } else {
+                        reject('not_found');
+                    }
+                }
+            });
+        });
+    };
+
+    let deletePetForAdoption = (id) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Pet.findOneAndRemove({_id: id}, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            })
+        });
+    };
+
+    let updateClientPet = (id, body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            AnimalSpecies.findById(body.specie, function (err, specie) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (specie) {
+                        Pet.findById(id, function (err, pet) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                if (pet) {
+                                    if (pet.owner.toString() === body.owner.toString()) {
+                                        body.specie = specie._id;
+                                        body.category = specie.category;
+                                        if (body.image) {
+                                            uploadService.uploadFile(body.image).then((link) => {
+                                                body.image = link;
+                                                Pet.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                                                    if (err) {
+                                                        reject(err);
+                                                    } else {
+                                                        resolve();
+                                                    }
+                                                })
+                                            }).catch((err) => {
+                                                reject(err);
+                                            })
+                                        } else {
+                                            Pet.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                                                if (err) {
+                                                    reject(err);
+                                                } else {
+                                                    resolve();
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        Appointment.findOne({
+                                            pet: id,
+                                            startDate: {$gte: new Date()}
+                                        }, function (err, appointment) {
+                                            if (err) {
+                                                reject(err);
+                                            } else {
+                                                if (appointment) {
+                                                    reject('cannotUpdateClientPet');
+                                                } else {
+                                                    body.specie = specie._id;
+                                                    body.category = specie.category;
+                                                    if (body.image) {
+                                                        uploadService.uploadFile(body.image).then((link) => {
+                                                            body.image = link;
+                                                            Pet.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                                                                if (err) {
+                                                                    reject(err);
+                                                                } else {
+                                                                    resolve();
+                                                                }
+                                                            })
+                                                        }).catch((err) => {
+                                                            reject(err);
+                                                        })
+                                                    } else {
+                                                        Pet.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                                                            if (err) {
+                                                                reject(err);
+                                                            } else {
+                                                                resolve();
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    reject('not_found');
+                                }
+                            }
+                        })
+                    } else {
+                        reject('not_found');
+                    }
+                }
+            });
+        });
+    };
+
+    let deleteClientPet = (id) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Appointment.findOne({pet: id, startDate: {$gte: new Date()}}, function (err, appointment) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (appointment) {
+                        reject('cannotDeleteClientPet');
+                    } else {
+                        Pet.findOneAndRemove({_id: id}, function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                Appointment.deleteMany({pet: id}, function (err) {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        resolve();
+                                    }
+                                });
+                            }
+                        })
+                    }
+                }
+            });
+        });
+    };
+
     return {
         getPetsToAdopt: getPetsToAdopt,
         addPetForAdoption: addPetForAdoption,
         addClientPet: addClientPet,
         getClientPets: getClientPets,
-        getLoggedInUserPets: getLoggedInUserPets
+        getLoggedInUserPets: getLoggedInUserPets,
+        updatePetForAdoption: updatePetForAdoption,
+        deletePetForAdoption: deletePetForAdoption,
+        updateClientPet: updateClientPet,
+        deleteClientPet: deleteClientPet
     }
 };
 module.exports = Service;
