@@ -72,5 +72,24 @@ let petValidator = {
             }).optional()
         }
     },
+    adoptPet: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            _id: Joi.objectID().required(),
+            owner: Joi.objectID().optional(),
+        }
+    },
+    unAdoptPet: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            _id: Joi.objectID().required()
+        }
+    },
 };
 module.exports = petValidator;

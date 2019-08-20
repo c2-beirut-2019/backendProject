@@ -102,6 +102,22 @@ let Controller = () => {
         });
     };
 
+    let adoptPet = (req, res) => {
+        petService.adoptPet(req.body).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let unAdoptPet = (req, res) => {
+        petService.unAdoptPet(req.body).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         getPetsToAdopt: getPetsToAdopt,
         addPetToAdopt: addPetToAdopt,
@@ -111,7 +127,9 @@ let Controller = () => {
         updatePetForAdoption: updatePetForAdoption,
         deletePetForAdoption: deletePetForAdoption,
         updateClientPet: updateClientPet,
-        deleteClientPet: deleteClientPet
+        deleteClientPet: deleteClientPet,
+        adoptPet: adoptPet,
+        unAdoptPet: unAdoptPet
     }
 };
 module.exports = Controller;

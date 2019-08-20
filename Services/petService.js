@@ -398,6 +398,44 @@ let Service = () => {
         });
     };
 
+    let adoptPet = (body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Pet.findOneAndUpdate({_id: body._id}, {
+                $set: {
+                    owner: body.owner,
+                    isToAdopt: false,
+                    isAdopted: true
+                }
+            }, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            })
+        });
+    };
+
+    let unAdoptPet = (body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Pet.findOneAndUpdate({_id: body._id}, {
+                $set: {
+                    isToAdopt: true,
+                    isAdopted: false
+                },
+                $unset: {
+                    owner: ''
+                }
+            }, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            })
+        });
+    };
+
     return {
         getPetsToAdopt: getPetsToAdopt,
         addPetForAdoption: addPetForAdoption,
@@ -407,7 +445,9 @@ let Service = () => {
         updatePetForAdoption: updatePetForAdoption,
         deletePetForAdoption: deletePetForAdoption,
         updateClientPet: updateClientPet,
-        deleteClientPet: deleteClientPet
+        deleteClientPet: deleteClientPet,
+        adoptPet: adoptPet,
+        unAdoptPet: unAdoptPet
     }
 };
 module.exports = Service;
