@@ -120,7 +120,7 @@ let paginateService = (model) => {
                         data: result[0].data,
                         pageCount: result[0].metadata[0] ? Math.ceil(result[0].metadata[0].total / options.limit) : 0,
                         totalCount: result[0].metadata[0] ? result[0].metadata[0].total : 0,
-                        pageLimit: options.limit
+                        pageLimit: parseFloat(options.limit)
                     });
                 }
             });
