@@ -118,6 +118,14 @@ let Controller = () => {
         });
     };
 
+    let getAdoptedPets = (req, res) => {
+        petService.getAdoptedPets().then((result) => {
+            res.status(200).send(result);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
     return {
         getPetsToAdopt: getPetsToAdopt,
         addPetToAdopt: addPetToAdopt,
@@ -129,7 +137,8 @@ let Controller = () => {
         updateClientPet: updateClientPet,
         deleteClientPet: deleteClientPet,
         adoptPet: adoptPet,
-        unAdoptPet: unAdoptPet
+        unAdoptPet: unAdoptPet,
+        getAdoptedPets: getAdoptedPets
     }
 };
 module.exports = Controller;

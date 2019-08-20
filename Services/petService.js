@@ -166,7 +166,15 @@ let Service = () => {
     let getClientPets = () => {
         return new blueBirdPromise((resolve, reject) => {
             let aggregation = [
-                {$match: {isToAdopt: false, isAdopted: false}},
+                {
+                    $match: {
+                        $or: [{isToAdopt: false, isAdopted: false}, {
+                            isToAdopt: false,
+                            isAdopted: true,
+                            owner: {$ne: ''}
+                        }]
+                    }
+                },
                 {$lookup: {from: 'animal_species', localField: 'specie', foreignField: '_id', as: 'specie'}},
                 {$unwind: {path: '$specie', preserveNullAndEmptyArrays: true}},
                 {$lookup: {from: 'animal_categories', localField: 'category', foreignField: '_id', as: 'category'}},
@@ -180,6 +188,7 @@ let Service = () => {
                         color: 1,
                         registrationDate: 1,
                         dateOfBirth: 1,
+                        isAdopted: 1,
                         category_name: '$category.name',
                         category_id: '$category._id',
                         specie_name: '$specie.name',
@@ -436,6 +445,45 @@ let Service = () => {
         });
     };
 
+    let getAdoptedPets = () => {
+        return new blueBirdPromise((resolve, reject) => {
+            let aggregation = [
+                {
+                    $match: {isToAdopt: false, isAdopted: true}
+                },
+                {$lookup: {from: 'animal_species', localField: 'specie', foreignField: '_id', as: 'specie'}},
+                {$unwind: {path: '$specie', preserveNullAndEmptyArrays: true}},
+                {$lookup: {from: 'animal_categories', localField: 'category', foreignField: '_id', as: 'category'}},
+                {$unwind: {path: '$category', preserveNullAndEmptyArrays: true}},
+                {$lookup: {from: 'users', localField: 'owner', foreignField: '_id', as: 'owner'}},
+                {$unwind: {path: '$owner', preserveNullAndEmptyArrays: true}},
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        color: 1,
+                        registrationDate: 1,
+                        dateOfBirth: 1,
+                        category_name: '$category.name',
+                        category_id: '$category._id',
+                        specie_name: '$specie.name',
+                        specie_id: '$specie._id',
+                        owner_firstName: '$owner.firstName',
+                        owner_lastName: '$owner.lastName',
+                        owner_phoneNumber: '$owner.phoneNumber',
+                        owner_emergencyPerson: '$owner.emergencyPerson',
+                        owner_emergencyNumber: '$owner.emergencyNumber',
+                    }
+                }
+            ];
+            Pet.aggregate(aggregation).then((result) => {
+                resolve(result);
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    };
+
     return {
         getPetsToAdopt: getPetsToAdopt,
         addPetForAdoption: addPetForAdoption,
@@ -447,7 +495,8 @@ let Service = () => {
         updateClientPet: updateClientPet,
         deleteClientPet: deleteClientPet,
         adoptPet: adoptPet,
-        unAdoptPet: unAdoptPet
+        unAdoptPet: unAdoptPet,
+        getAdoptedPets: getAdoptedPets
     }
 };
 module.exports = Service;
