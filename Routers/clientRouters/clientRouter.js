@@ -12,6 +12,10 @@ let router = () => {
         .get(clientController.getUsers)
         .post(validate(clientValidator.addClient), clientController.addClient);
 
+    router.route('/:id')
+        .put(validate(clientValidator.updateClient), clientController.updateUser)
+        .delete(clientController.deleteUser);
+
     router.route('/code')
         .post(validate(clientValidator.validateCode), clientController.validateAccessCode);
 

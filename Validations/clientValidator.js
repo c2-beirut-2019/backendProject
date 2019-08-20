@@ -16,6 +16,21 @@ let clientValidator = {
             emergencyNumber: Joi.string().required()
         }
     },
+    updateClient: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            firstName: Joi.string().required(),
+            lastName: Joi.string().required(),
+            dateOfBirth: Joi.date().optional().allow(null),
+            phoneNumber: Joi.string().required(),
+            referredBy: Joi.string().optional().allow(''),
+            emergencyPerson: Joi.string().required(),
+            emergencyNumber: Joi.string().required()
+        }
+    },
     validateCode: {
         options: {
             allowUnknownBody: false,

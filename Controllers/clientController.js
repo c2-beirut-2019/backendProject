@@ -53,10 +53,31 @@ let Controller = () => {
         userService.updateUserProfile(req.user._id, req.body).then((result) => {
             res.status(200).send(result);
         }).catch((err) => {
-            console.log('err',err);
+            console.log('err', err);
             res.status(500).send(messagesService.serverError);
         });
     };
+
+    let updateUser = (req, res) => {
+        userService.updateUser(req.params.id, req.body).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
+    let deleteUser = (req, res) => {
+        userService.deleteUser(req.params.id).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'cannotDeleteUser') {
+                res.status(460).send(messagesService.cannotDeleteUser);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
 
     return {
         addClient: addClient,
@@ -64,7 +85,9 @@ let Controller = () => {
         validateAccessCode: validateAccessCode,
         addUsernameAndPassword: addUsernameAndPassword,
         getUserProfile: getUserProfile,
-        updateUserProfile: updateUserProfile
+        updateUserProfile: updateUserProfile,
+        updateUser: updateUser,
+        deleteUser: deleteUser
     }
 };
 module.exports = Controller;

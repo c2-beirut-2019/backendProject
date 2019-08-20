@@ -96,5 +96,17 @@ module.exports = {
         status: 460,
         error_code: "cannotUpdateClientPet",
         message: "You cannot update the owner of the pet because of future appointments attached to it"
+    },
+    cannotDeleteUser: {
+        error: true,
+        status: 460,
+        error_code: "cannotDeleteUser",
+        message: "You cannot delete this user because of pets attached to it"
+    },
+    cannotDeleteDoctor: {
+        error: true,
+        status: 460,
+        error_code: "cannotDeleteDoctor",
+        message: "You cannot delete this doctor because of future appointments attached to it"
     }
 };
