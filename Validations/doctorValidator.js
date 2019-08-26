@@ -16,6 +16,20 @@ let clientValidator = {
             phoneNumber: Joi.string().required()
         }
     },
+    updateDoctor: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            firstName: Joi.string().required(),
+            lastName: Joi.string().required(),
+            speciality: Joi.string().required(),
+            diplomas: Joi.string().required(),
+            dateOfBirth: Joi.date().optional().allow(null),
+            phoneNumber: Joi.string().required()
+        }
+    },
     validateCode: {
         options: {
             allowUnknownBody: false,
@@ -70,6 +84,17 @@ let clientValidator = {
         }
     },
     addDoctorsSchedule: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            day: Joi.number().required(),
+            from_time: Joi.string().required(),
+            to_time: Joi.string().required(),
+        }
+    },
+    updateDoctorsSchedule: {
         options: {
             allowUnknownBody: false,
             status: 400

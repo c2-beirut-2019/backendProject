@@ -13,6 +13,10 @@ let router = () => {
         .get(doctorController.getDoctors)
         .post(validate(doctorValidator.addDoctor), doctorController.addDoctor);
 
+    router.route('/:id')
+        .put(validate(doctorValidator.updateDoctor), doctorController.updateDoctor)
+        .delete(doctorController.deleteDoctor);
+
     router.route('/code')
         .post(validate(doctorValidator.validateCode), doctorController.validateAccessCode);
 
@@ -22,6 +26,10 @@ let router = () => {
     router.route('/schedule')
         .get(validate(doctorValidator.getDoctorSchedule), doctorController.getDoctorsSchedule)
         .post(validate(doctorValidator.addDoctorsSchedule), doctorController.addDoctorsSchedule);
+
+    router.route('/schedule/:id')
+        .put(validate(doctorValidator.updateDoctorsSchedule), doctorController.updateDoctorSchedule)
+        .delete(doctorController.deleteDoctorSchedule);
 
     router.route('/authenticate')
         .post(validate(doctorValidator.loginDoctorValidator), oAuthProvider.tokenProvider);

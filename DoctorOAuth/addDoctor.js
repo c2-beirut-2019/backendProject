@@ -1,6 +1,8 @@
 let addUser = () => {
     let doctorModel = require('../Models/Doctor'),
         clientModel = require('./mongodb/OAuthClient'),
+        accessTokenModel = require('./mongodb/OAuthAccessToken'),
+        refreshTokenModel = require('./mongodb/OAuthRefreshToken'),
         randomString = require('randomstring'),
         bluebirdPromise = require('bluebird');
 
@@ -81,10 +83,29 @@ let addUser = () => {
         });
     };
 
+    let deleteDoctor = (id) => {
+        return new bluebirdPromise((resolve, reject) => {
+            clientModel.findOneAndRemove({User: id}).then(() => {
+                accessTokenModel.findOneAndRemove({User: id}).then(() => {
+                    refreshTokenModel.findOneAndRemove({User: id}).then(() => {
+                        resolve();
+                    }).catch((err) => {
+                        reject(err);
+                    })
+                }).catch((err) => {
+                    reject(err);
+                })
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    };
+
     return {
         createDoctorAndAccessCode: createDoctorAndAccessCode,
         validateDoctorAccessCode: validateDoctorAccessCode,
-        addUsernameAndPassword: addUsernameAndPassword
+        addUsernameAndPassword: addUsernameAndPassword,
+        deleteDoctor: deleteDoctor
     }
 };
 module.exports = addUser;

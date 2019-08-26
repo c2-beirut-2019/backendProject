@@ -1,10 +1,12 @@
 let doctorsService = () => {
     let blueBirdPromise = require('bluebird');
+    let Appointment = require('../Models/Appointment');
     let Doctor = require('../Models/Doctor');
     let DoctorSchedule = require('../Models/DoctorsSchedule');
     let moment = require('moment');
     let mongoose = require('mongoose');
     let uploadService = require('../Services/uploadService')();
+    const doctorOauthService = require('../ClientOAuth/addUser')();
 
     let getDoctorsList = () => {
         return new blueBirdPromise((resolve, reject) => {
@@ -108,6 +110,81 @@ let doctorsService = () => {
         });
     };
 
+    let updateDoctorsSchedule = (id, body, doctor) => {
+        return new blueBirdPromise((resolve, reject) => {
+            DoctorSchedule.findOne({Doctor: doctor, day: body.day}, function (err, schedule) {
+                if (err) {
+                    reject(err);
+                } else if (schedule && schedule._id.toString() !== id.toString()) {
+                    reject('scheduleAlreadyExists');
+                } else {
+                    let day_name = '';
+                    switch (body.day) {
+                        case 0:
+                            day_name = 'Sunday';
+                            break;
+                        case 1:
+                            day_name = 'Monday';
+                            break;
+                        case 2:
+                            day_name = 'Tuesday';
+                            break;
+                        case 3:
+                            day_name = 'Wednesday';
+                            break;
+                        case 4:
+                            day_name = 'Thursday';
+                            break;
+                        case 5:
+                            day_name = 'Friday';
+                            break;
+                        case 6:
+                            day_name = 'Saturday';
+                            break;
+                    }
+                    let fromTime = moment(body.from_time, ["h:mm A"]).format("HH:mm:ss").split(':');
+                    let fromTimeDate = moment().set({
+                        hour: parseInt(fromTime[0]),
+                        minute: parseInt(fromTime[1]),
+                        second: parseInt(fromTime[2])
+                    }).toDate();
+                    let toTime = moment(body.to_time, ["h:mm A"]).format("HH:mm:ss").split(':');
+                    let toTimeDate = moment().set({
+                        hour: parseInt(toTime[0]),
+                        minute: parseInt(toTime[1]),
+                        second: parseInt(toTime[2])
+                    }).toDate();
+                    let update = {
+                        day: body.day,
+                        Doctor: mongoose.Types.ObjectId(doctor),
+                        day_name: day_name,
+                        from_time: fromTimeDate,
+                        to_time: toTimeDate
+                    };
+                    DoctorSchedule.findOneAndUpdate({_id: id}, {$set: update}, function (err) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    })
+                }
+            });
+        });
+    };
+
+    let deleteDoctorSchedule = (id) => {
+        return new blueBirdPromise((resolve, reject) => {
+            DoctorSchedule.findOneAndRemove({_id: id}, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            })
+        });
+    };
+
     let getDoctorsSchedule = (doctor) => {
         return new blueBirdPromise((resolve, reject) => {
             let aggregation = [
@@ -189,13 +266,67 @@ let doctorsService = () => {
         });
     };
 
+    let updateDoctor = (id, body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Doctor.findOneAndUpdate({_id: id}, {$set: body}, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    };
+
+    let deleteDoctor = (id) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Appointment.findOne({doctor: id, startDate: {$gte: new Date()}}, function (err, appointment) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (appointment) {
+                        reject('cannotDeleteDoctor');
+                    } else {
+                        Doctor.findOneAndRemove({_id: id}, function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                Appointment.deleteMany({doctor: id}, function (err) {
+                                    if (err) {
+                                        reject(err);
+                                    } else {
+                                        DoctorSchedule.deleteMany({Doctor: id}, function (err) {
+                                            if (err) {
+                                                reject(err);
+                                            } else {
+                                                doctorOauthService.deleteDoctor(id).then(() => {
+                                                    resolve();
+                                                }).catch((err) => {
+                                                    reject(err);
+                                                })
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        })
+                    }
+                }
+            });
+        });
+    };
+
     return {
         getDoctorsList: getDoctorsList,
         getDoctors: getDoctors,
         addDoctorsSchedule: addDoctorsSchedule,
         getDoctorsSchedule: getDoctorsSchedule,
         getDoctorProfile: getDoctorProfile,
-        updateDoctorProfile: updateDoctorProfile
+        updateDoctorProfile: updateDoctorProfile,
+        updateDoctor: updateDoctor,
+        deleteDoctor: deleteDoctor,
+        updateDoctorsSchedule: updateDoctorsSchedule,
+        deleteDoctorSchedule: deleteDoctorSchedule
     }
 };
 module.exports = doctorsService;
