@@ -6,7 +6,7 @@ let doctorsService = () => {
     let moment = require('moment');
     let mongoose = require('mongoose');
     let uploadService = require('../Services/uploadService')();
-    const doctorOauthService = require('../ClientOAuth/addUser')();
+    const doctorOauthService = require('../DoctorOAuth/addDoctor')();
 
     let getDoctorsList = () => {
         return new blueBirdPromise((resolve, reject) => {
