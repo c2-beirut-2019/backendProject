@@ -83,7 +83,7 @@ let addUser = () => {
         });
     };
 
-    let deleteDoctor = (id) => {
+    let deleteUser = (id) => {
         return new bluebirdPromise((resolve, reject) => {
             clientModel.findOneAndRemove({User: id}).then(() => {
                 accessTokenModel.findOneAndRemove({User: id}).then(() => {
@@ -106,7 +106,7 @@ let addUser = () => {
         createClientAndAccessCode: createClientAndAccessCode,
         validateClientAccessCode: validateClientAccessCode,
         addUsernameAndPassword: addUsernameAndPassword,
-        deleteDoctor: deleteDoctor
+        deleteUser: deleteUser
     }
 };
 module.exports = addUser;
