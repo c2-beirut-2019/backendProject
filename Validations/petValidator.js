@@ -15,8 +15,9 @@ let petValidator = {
             image: Joi.object({
                 extension: Joi.string().required(),
                 name: Joi.string().required(),
-                data: Joi.string().required()
-            }).optional()
+                data: Joi.string().required(),
+                size: Joi.number().optional()
+            }).optional().allow('')
         }
     },
     addClientPet: {
@@ -33,8 +34,9 @@ let petValidator = {
             image: Joi.object({
                 extension: Joi.string().required(),
                 name: Joi.string().required(),
-                data: Joi.string().required()
-            }).optional()
+                data: Joi.string().required(),
+                size: Joi.number().optional()
+            }).optional().allow('')
         }
     },
     updatePetToAdopt: {
@@ -50,8 +52,9 @@ let petValidator = {
             image: Joi.object({
                 extension: Joi.string().required(),
                 name: Joi.string().required(),
-                data: Joi.string().required()
-            }).optional()
+                data: Joi.string().required(),
+                size: Joi.number().optional()
+            }).optional().allow('')
         }
     },
     updateClientPet: {
@@ -68,8 +71,9 @@ let petValidator = {
             image: Joi.object({
                 extension: Joi.string().required(),
                 name: Joi.string().required(),
-                data: Joi.string().required()
-            }).optional()
+                data: Joi.string().required(),
+                size: Joi.number().optional()
+            }).optional().allow('')
         }
     },
     adoptPet: {

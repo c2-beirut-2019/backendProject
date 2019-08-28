@@ -26,7 +26,7 @@ let Service = () => {
                         category_name: '$category.name',
                         category_id: '$category._id',
                         specie_name: '$specie.name',
-                        specie_id: '$specie._id',
+                        specie: '$specie._id',
                     }
                 }
             ];

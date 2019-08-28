@@ -12,8 +12,9 @@ let newsValidator = {
             image: Joi.object({
                 extension: Joi.string().required(),
                 name: Joi.string().required(),
-                data: Joi.string().required()
-            }).optional()
+                data: Joi.string().required(),
+                size: Joi.number().optional()
+            }).optional().allow('')
         }
     },
     getNews: {
@@ -38,8 +39,9 @@ let newsValidator = {
             image: Joi.object({
                 extension: Joi.string().required(),
                 name: Joi.string().required(),
-                data: Joi.string().required()
-            }).optional()
+                data: Joi.string().required(),
+                size: Joi.number().optional()
+            }).optional().allow('')
         }
     },
 };

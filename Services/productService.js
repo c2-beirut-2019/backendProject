@@ -76,7 +76,7 @@ let Service = () => {
                         reject(err);
                     })
                 } else {
-                    Product.aggregate(aggregation).then((result) => {
+                    Product.find({}).then((result) => {
                         resolve(result);
                     }).catch((err) => {
                         reject(err);
@@ -139,12 +139,18 @@ let Service = () => {
             if (body.images && body.images.length > 0) {
                 let linkImages = [];
                 async.each(body.images, (image, callback) => {
-                    uploadService.uploadFile(image).then((link) => {
-                        linkImages.push(link);
+                    if (typeof (image) !== 'string') {
+                        console.log('in if');
+                        uploadService.uploadFile(image).then((link) => {
+                            linkImages.push(link);
+                            callback();
+                        }).catch((err) => {
+                            reject(err);
+                        })
+                    } else {
+                        linkImages.push(image);
                         callback();
-                    }).catch((err) => {
-                        reject(err);
-                    })
+                    }
                 }, (err) => {
                     if (err) {
                         reject();

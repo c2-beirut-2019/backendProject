@@ -13,11 +13,7 @@ let productValidator = {
             price: Joi.number().required(),
             quantityAvailable: Joi.number().required(),
             colorsAvailable: Joi.array().items(Joi.string()).required().min(1),
-            images: Joi.array().items(Joi.object({
-                extension: Joi.string().required(),
-                name: Joi.string().required(),
-                data: Joi.string().required()
-            })).optional()
+            images: Joi.array().optional().allow('')
         }
     },
     updateProduct: {
@@ -31,11 +27,7 @@ let productValidator = {
             price: Joi.number().required(),
             quantityAvailable: Joi.number().required(),
             colorsAvailable: Joi.array().items(Joi.string()).required().min(1),
-            images: Joi.array().items(Joi.object({
-                extension: Joi.string().required(),
-                name: Joi.string().required(),
-                data: Joi.string().required()
-            })).optional()
+            images: Joi.array().optional().allow('')
         }
     }
 };
