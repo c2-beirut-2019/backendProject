@@ -14,7 +14,7 @@ let Service = () => {
                         _id: 1,
                         name: 1,
                         category_name: '$category.name',
-                        category_id: '$category._id',
+                        category: '$category._id',
                     }
                 },
                 {$sort: {name: 1}}

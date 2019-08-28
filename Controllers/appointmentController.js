@@ -43,7 +43,7 @@ let Controller = () => {
     };
 
     let getAllAppointments = (req, res) => {
-        appointmentService.getAppointmentsByType(null, null, null, null, null, true).then((results) => {
+        appointmentService.getAppointmentsByType(null, null, null, null, null, null, null, true).then((results) => {
             res.status(200).send(results);
         }).catch((err) => {
             res.status(500).send(messagesService.serverError);
