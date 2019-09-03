@@ -1,5 +1,6 @@
 let Controller = () => {
     let petService = require('../Services/petService')();
+    let appointmentService = require('../Services/appointmentService')();
     let messagesService = require('../Services/messagesService');
 
     let getPetsToAdopt = (req, res) => {
@@ -126,6 +127,23 @@ let Controller = () => {
         });
     };
 
+    let addPetAppointment = (req, res) => {
+        req.body.pet = req.body._id;
+        appointmentService.addAppointment(null, req.body, true).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'not_found') {
+                res.status(460).send(messagesService.not_found);
+            } else if (err === 'appointment_exists') {
+                res.status(460).send(messagesService.appointmentExists);
+            } else if (err === 'doctor_not_available') {
+                res.status(460).send(messagesService.doctorNotAvailable);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
     return {
         getPetsToAdopt: getPetsToAdopt,
         addPetToAdopt: addPetToAdopt,
@@ -138,7 +156,8 @@ let Controller = () => {
         deleteClientPet: deleteClientPet,
         adoptPet: adoptPet,
         unAdoptPet: unAdoptPet,
-        getAdoptedPets: getAdoptedPets
+        getAdoptedPets: getAdoptedPets,
+        addPetAppointment: addPetAppointment
     }
 };
 module.exports = Controller;

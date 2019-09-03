@@ -95,5 +95,17 @@ let petValidator = {
             _id: Joi.objectID().required()
         }
     },
+    addAppointment: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            _id: Joi.objectID().required(),
+            doctor: Joi.objectID().required(),
+            appointmentType: Joi.objectID().required(),
+            startDate: Joi.date().required().min('now'),
+        }
+    },
 };
 module.exports = petValidator;

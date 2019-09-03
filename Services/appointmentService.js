@@ -8,13 +8,17 @@ let Service = () => {
     let Pet = require('../Models/Pet');
     let AppointmentType = require('../Models/AppointmentType');
 
-    let addAppointment = (userID, body) => {
+    let addAppointment = (userID, body, isFromCMS = false) => {
         return new blueBirdPromise((resolve, reject) => {
             AppointmentType.findById(body.appointmentType).then((appointmentType) => {
                 if (appointmentType) {
                     Doctor.findById(body.doctor).then((doctor) => {
                         if (doctor) {
-                            Pet.findOne({owner: userID, _id: body.pet}).then((pet) => {
+                            let query = {owner: userID, _id: body.pet};
+                            if(isFromCMS){
+                                query = {_id: body.pet};
+                            }
+                            Pet.findOne(query).then((pet) => {
                                 if (pet) {
                                     const startDate = moment(body.startDate);
                                     const endDate = moment(body.startDate).add(appointmentType.procedureTime, 'minutes').format();
@@ -59,7 +63,7 @@ let Service = () => {
                                                             doctor: body.doctor,
                                                             pet: body.pet,
                                                             appointmentType: body.appointmentType,
-                                                            user: userID,
+                                                            user: pet.owner,
                                                             startDate: startDate,
                                                             endDate: endDate
                                                         });
@@ -177,9 +181,11 @@ let Service = () => {
                         doctor_id: '$doctor._id',
                         doctor_firstName: '$doctor.firstName',
                         doctor_lastName: '$doctor.lastName',
+                        doctor_name: { $concat: [ "$doctor.firstName", " ", "$doctor.lastName" ] },
                         user_id: '$user._id',
                         user_firstName: '$user.firstName',
                         user_lastName: '$user.lastName',
+                        user_name: { $concat: [ "$user.firstName", " ", "$user.lastName" ] },
                         doctor_speciality: '$doctor.speciality',
                         pet_id: '$pet._id',
                         pet_name: '$pet.name',

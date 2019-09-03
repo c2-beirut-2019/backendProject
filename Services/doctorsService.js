@@ -16,7 +16,8 @@ let doctorsService = () => {
                         firstName: 1,
                         lastName: 1,
                         speciality: 1,
-                        diplomas: 1
+                        diplomas: 1,
+                        fullName: {$concat:['$firstName',' ','$lastName']}
                     }
                 }
             ];
