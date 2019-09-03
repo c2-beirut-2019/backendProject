@@ -56,7 +56,7 @@ let doctorsService = () => {
                 } else {
                     let day_name = '';
                     switch (body.day) {
-                        case 0:
+                        case 7:
                             day_name = 'Sunday';
                             break;
                         case 1:
@@ -78,13 +78,13 @@ let doctorsService = () => {
                             day_name = 'Saturday';
                             break;
                     }
-                    let fromTime = moment(body.from_time, ["h:mm A"]).format("HH:mm:ss").split(':');
+                    let fromTime = moment(body.from_time_formated, ["h:mm A"]).format("HH:mm:ss").split(':');
                     let fromTimeDate = moment().set({
                         hour: parseInt(fromTime[0]),
                         minute: parseInt(fromTime[1]),
                         second: parseInt(fromTime[2])
                     }).toDate();
-                    let toTime = moment(body.to_time, ["h:mm A"]).format("HH:mm:ss").split(':');
+                    let toTime = moment(body.to_time_formated, ["h:mm A"]).format("HH:mm:ss").split(':');
                     let toTimeDate = moment().set({
                         hour: parseInt(toTime[0]),
                         minute: parseInt(toTime[1]),
@@ -120,7 +120,7 @@ let doctorsService = () => {
                 } else {
                     let day_name = '';
                     switch (body.day) {
-                        case 0:
+                        case 7:
                             day_name = 'Sunday';
                             break;
                         case 1:
@@ -142,13 +142,13 @@ let doctorsService = () => {
                             day_name = 'Saturday';
                             break;
                     }
-                    let fromTime = moment(body.from_time, ["h:mm A"]).format("HH:mm:ss").split(':');
+                    let fromTime = moment(body.from_time_formated, ["h:mm A"]).format("HH:mm:ss").split(':');
                     let fromTimeDate = moment().set({
                         hour: parseInt(fromTime[0]),
                         minute: parseInt(fromTime[1]),
                         second: parseInt(fromTime[2])
                     }).toDate();
-                    let toTime = moment(body.to_time, ["h:mm A"]).format("HH:mm:ss").split(':');
+                    let toTime = moment(body.to_time_formated, ["h:mm A"]).format("HH:mm:ss").split(':');
                     let toTimeDate = moment().set({
                         hour: parseInt(toTime[0]),
                         minute: parseInt(toTime[1]),
@@ -206,7 +206,6 @@ let doctorsService = () => {
                     reject(err);
                 } else {
                     for (let sch of schedule) {
-                        delete sch.day;
                         let from_time_formated = moment(sch.from_time).format('hh:mm a');
                         let to_time_formated = moment(sch.to_time).format('hh:mm a');
                         sch.from_time_formated = from_time_formated;

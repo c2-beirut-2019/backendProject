@@ -90,8 +90,8 @@ let clientValidator = {
         },
         body: {
             day: Joi.number().required(),
-            from_time: Joi.string().required(),
-            to_time: Joi.string().required(),
+            from_time_formated: Joi.string().required(),
+            to_time_formated: Joi.string().required(),
         }
     },
     updateDoctorsSchedule: {
@@ -101,8 +101,8 @@ let clientValidator = {
         },
         body: {
             day: Joi.number().required(),
-            from_time: Joi.string().required(),
-            to_time: Joi.string().required(),
+            from_time_formated: Joi.string().required(),
+            to_time_formated: Joi.string().required(),
         }
     },
     updateDoctorProfile: {
