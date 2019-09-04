@@ -110,6 +110,116 @@ let Service = () => {
         });
     };
 
+    let updateAppointment = (id, body) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Appointment.findById(id).then((appointment) => {
+                if (appointment) {
+                    if (appointment.is_confirmed) {
+                        reject('appointment_confirmed');
+                    } else {
+                        AppointmentType.findById(body.appointmentType).then((appointmentType) => {
+                            if (appointmentType) {
+                                Doctor.findById(body.doctor).then((doctor) => {
+                                    if (doctor) {
+                                        Pet.findOne({_id: body.pet}).then((pet) => {
+                                            if (pet) {
+                                                const startDate = moment(body.startDate);
+                                                const endDate = moment(body.startDate).add(appointmentType.procedureTime, 'minutes').format();
+                                                const day = startDate.day();
+                                                DoctorsSchedule.findOne({
+                                                    Doctor: body.doctor,
+                                                    day: day
+                                                }).then((schedule) => {
+                                                    if (schedule) {
+                                                        let startDateCompare = Date.parse('20 Aug 2000 ' + moment(startDate).format('hh:mm a'));
+                                                        let endDateCompare = Date.parse('20 Aug 2000 ' + moment(endDate).format('hh:mm a'));
+                                                        let toDateCompare = Date.parse('20 Aug 2000 ' + moment(schedule.to_time).format('hh:mm a'));
+                                                        let fromDateCompare = Date.parse('20 Aug 2000 ' + moment(schedule.from_time).format('hh:mm a'));
+                                                        if ((startDateCompare > fromDateCompare || startDateCompare === fromDateCompare)
+                                                            && (startDateCompare < toDateCompare)
+                                                            && (endDateCompare > fromDateCompare)
+                                                            && (endDateCompare < toDateCompare || endDateCompare === toDateCompare)) {
+                                                            let findQuery = {
+                                                                $and: [
+                                                                    {
+                                                                        $or: [
+                                                                            {startDate: startDate},
+                                                                            {
+                                                                                $and: [
+                                                                                    {startDate: {$lt: startDate}},
+                                                                                    {endDate: {$gt: startDate}}
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                $and: [
+                                                                                    {startDate: {$lt: endDate}},
+                                                                                    {endDate: {$gt: endDate}}
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {doctor: mongoose.Types.ObjectId(body.doctor)}
+                                                                ]
+                                                            };
+                                                            Appointment.findOne(findQuery).then((appointments) => {
+                                                                if (appointments && appointments._id.toString() !== id.toString()) {
+                                                                    reject('appointment_exists');
+                                                                } else {
+                                                                    let update = {
+                                                                        doctor: body.doctor,
+                                                                        pet: body.pet,
+                                                                        appointmentType: body.appointmentType,
+                                                                        user: pet.owner,
+                                                                        startDate: startDate,
+                                                                        endDate: endDate
+                                                                    };
+                                                                    Appointment.findOneAndUpdate({_id: id}, {$set: update}, function (err) {
+                                                                        if (err) {
+                                                                            reject(err);
+                                                                        } else {
+                                                                            resolve();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }).catch((err) => {
+                                                                reject(err);
+                                                            });
+                                                        }
+                                                        else {
+                                                            reject('doctor_not_available');
+                                                        }
+                                                    } else {
+                                                        reject('doctor_not_available');
+                                                    }
+                                                }).catch((err) => {
+                                                    reject(err);
+                                                });
+                                            } else {
+                                                reject('not_found');
+                                            }
+                                        }).catch((err) => {
+                                            reject(err);
+                                        });
+                                    } else {
+                                        reject('not_found');
+                                    }
+                                }).catch((err) => {
+                                    reject(err);
+                                });
+                            } else {
+                                reject('not_found');
+                            }
+                        }).catch((err) => {
+                            reject('not_found');
+                        });
+                    }
+                }
+            }).catch((err) => {
+                reject('not_found');
+            })
+        });
+    };
+
     let getAppointments = (userID, doctorID) => {
         return new blueBirdPromise((resolve, reject) => {
             let match = {};
@@ -231,11 +341,48 @@ let Service = () => {
         });
     };
 
+    let unConfirmAppointment = (ids) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Appointment.update({_id: {$in: ids}}, {$set: {is_confirmed: false}}, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            })
+        });
+    };
+
+    let deleteAppointment = (id) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Appointment.findById(id, function (err, appointment) {
+                if (err) {
+                    reject(err);
+                } else {
+                    if (appointment.is_confirmed) {
+                        reject('appointment_confirmed');
+                    } else {
+                        Appointment.findOneAndRemove({_id: id}, function (err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        })
+                    }
+                }
+            });
+        });
+    };
+
     return {
         addAppointment: addAppointment,
         getAppointments: getAppointments,
         getAppointmentsByType: getAppointmentsByType,
-        confirmAppointment: confirmAppointment
+        confirmAppointment: confirmAppointment,
+        unConfirmAppointment: unConfirmAppointment,
+        updateAppointment: updateAppointment,
+        deleteAppointment: deleteAppointment
     }
 };
 module.exports = Service;

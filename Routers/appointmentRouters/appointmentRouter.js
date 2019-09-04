@@ -12,8 +12,15 @@ let router = () => {
         .get(appointmentController.getAllAppointments)
         .post(validate(appointmentValidator.addCMSAppointment), appointmentController.addCMSAppointment);
 
+    router.route('/all/:id')
+        .put(validate(appointmentValidator.updateAppointment), appointmentController.updateAppointment)
+        .delete(appointmentController.deleteAppointment);
+
     router.route('/confirm')
         .post(validate(appointmentValidator.confirmAppointment), appointmentController.confirmAppointment);
+
+    router.route('/unConfirm')
+        .post(validate(appointmentValidator.unconfirmAppointment), appointmentController.unconfirmAppointment);
 
     router.use('/doctorAppointment', doctorAuthenticate());
     router.route('/doctorAppointment')

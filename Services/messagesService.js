@@ -108,5 +108,63 @@ module.exports = {
         status: 460,
         error_code: "cannotDeleteDoctor",
         message: "You cannot delete this doctor because of future appointments attached to it"
-    }
+    },
+    cannotUpdateAppointment: {
+        error: true,
+        status: 460,
+        error_code: "cannotUpdateAppointment",
+        message: "You cannot update a confirmed appointment"
+    },
+    cannotDeleteAppointment: {
+        error: true,
+        status: 460,
+        error_code: "cannotDeleteAppointment",
+        message: "You cannot delete a confirmed appointment"
+    },
+    updated: {
+        error: false,
+        message: 'Successfully Updated'
+    },
+    userExists: {
+        error: true,
+        status: 400,
+        error_code: "userExists",
+        message: 'Email Already Exists'
+    },
+    nameExists: {
+        error: true,
+        status: 400,
+        error_code: "nameExists",
+        message: 'Name Already Exists'
+    },
+    wrongCredentials: {
+        error: true,
+        status: 400,
+        error_code: "wrongCredentials",
+        message: 'Wrong Credentials'
+    },
+    passwordTokenExpired: {
+        error: true,
+        status: 400,
+        error_code: "passwordTokenExpired",
+        message: 'Token Expired'
+    },
+    passwordTokenInvalid: {
+        error: true,
+        status: 400,
+        error_code: "passwordTokenInvalid",
+        message: 'Invalid Token'
+    },
+    linkExists: {
+        error: true,
+        status: 400,
+        error_code: "linkExists",
+        message: 'Link Already Exists'
+    },
+    urlExists: {
+        error: true,
+        status: 400,
+        error_code: "urlExists",
+        message: 'URL Already Exists'
+    },
 };

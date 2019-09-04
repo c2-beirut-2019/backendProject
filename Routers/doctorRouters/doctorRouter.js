@@ -34,8 +34,6 @@ let router = () => {
     router.route('/authenticate')
         .post(validate(doctorValidator.loginDoctorValidator), oAuthProvider.tokenProvider);
 
-    router.use('/list', authenticate());
-
     router.route('/list')
         .get(doctorController.getDoctorsList);
 

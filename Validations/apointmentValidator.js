@@ -23,7 +23,28 @@ let appointmentValidator = {
             users: Joi.array().items(Joi.objectID()).required().min(1),
         }
     },
+    unconfirmAppointment: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            users: Joi.array().items(Joi.objectID()).required().min(1),
+        }
+    },
     addCMSAppointment: {
+        options: {
+            allowUnknownBody: false,
+            status: 400
+        },
+        body: {
+            pet: Joi.objectID().required(),
+            doctor: Joi.objectID().required(),
+            appointmentType: Joi.objectID().required(),
+            startDate: Joi.date().required().min('now'),
+        }
+    },
+    updateAppointment: {
         options: {
             allowUnknownBody: false,
             status: 400

@@ -74,6 +74,44 @@ let Controller = () => {
         });
     };
 
+    let updateAppointment = (req, res) => {
+        appointmentService.updateAppointment(req.params.id, req.body).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            if (err === 'appointment_confirmed') {
+                res.status(460).send(messagesService.cannotUpdateAppointment);
+            } else if (err === 'not_found') {
+                res.status(460).send(messagesService.not_found);
+            } else if (err === 'appointment_exists') {
+                res.status(460).send(messagesService.appointmentExists);
+            } else if (err === 'doctor_not_available') {
+                res.status(460).send(messagesService.doctorNotAvailable);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
+    let deleteAppointment = (req, res) => {
+        appointmentService.deleteAppointment(req.params.id).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            if (err === 'appointment_confirmed') {
+                res.status(460).send(messagesService.cannotDeleteAppointment);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
+    let unconfirmAppointment = (req, res) => {
+        appointmentService.unConfirmAppointment(req.body.users).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
 
     return {
         addAppointment: addAppointment,
@@ -82,7 +120,10 @@ let Controller = () => {
         getDoctorsAppointment: getDoctorsAppointment,
         getAllAppointments: getAllAppointments,
         addCMSAppointment: addCMSAppointment,
-        confirmAppointment:confirmAppointment
+        confirmAppointment: confirmAppointment,
+        updateAppointment: updateAppointment,
+        deleteAppointment: deleteAppointment,
+        unconfirmAppointment: unconfirmAppointment
 
     }
 };
