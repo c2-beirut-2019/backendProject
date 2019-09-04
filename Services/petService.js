@@ -199,6 +199,7 @@ let Service = () => {
                         owner_phoneNumber: '$owner.phoneNumber',
                         owner_emergencyPerson: '$owner.emergencyPerson',
                         owner_emergencyNumber: '$owner.emergencyNumber',
+                        pet_owner_name: {$concat: ['$name',' ','( ', '$owner.firstName', ' ', '$owner.lastName', ') ']}
                     }
                 }
             ];

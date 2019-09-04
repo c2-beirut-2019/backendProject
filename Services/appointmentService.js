@@ -15,7 +15,7 @@ let Service = () => {
                     Doctor.findById(body.doctor).then((doctor) => {
                         if (doctor) {
                             let query = {owner: userID, _id: body.pet};
-                            if(isFromCMS){
+                            if (isFromCMS) {
                                 query = {_id: body.pet};
                             }
                             Pet.findOne(query).then((pet) => {
@@ -65,7 +65,8 @@ let Service = () => {
                                                             appointmentType: body.appointmentType,
                                                             user: pet.owner,
                                                             startDate: startDate,
-                                                            endDate: endDate
+                                                            endDate: endDate,
+                                                            is_confirmed: isFromCMS
                                                         });
                                                         record.save(function (err) {
                                                             if (err) {
@@ -113,7 +114,7 @@ let Service = () => {
         return new blueBirdPromise((resolve, reject) => {
             let match = {};
             if (doctorID) {
-                match = {doctor: mongoose.Types.ObjectId(doctorID)}
+                match = {doctor: mongoose.Types.ObjectId(doctorID), is_confirmed: true}
             }
             let aggregation = [
                 {$match: match},
@@ -178,18 +179,22 @@ let Service = () => {
                     $project: {
                         startDate: 1,
                         endDate: 1,
+                        is_confirmed: 1,
+                        doctor: '$doctor._id',
                         doctor_id: '$doctor._id',
                         doctor_firstName: '$doctor.firstName',
                         doctor_lastName: '$doctor.lastName',
-                        doctor_name: { $concat: [ "$doctor.firstName", " ", "$doctor.lastName" ] },
+                        doctor_name: {$concat: ["$doctor.firstName", " ", "$doctor.lastName"]},
                         user_id: '$user._id',
                         user_firstName: '$user.firstName',
                         user_lastName: '$user.lastName',
-                        user_name: { $concat: [ "$user.firstName", " ", "$user.lastName" ] },
+                        user_name: {$concat: ["$user.firstName", " ", "$user.lastName"]},
                         doctor_speciality: '$doctor.speciality',
+                        pet: '$pet._id',
                         pet_id: '$pet._id',
                         pet_name: '$pet.name',
                         pet_image: '$pet.image',
+                        appointmentType: '$appointmentType._id',
                         appointmentType_id: '$appointmentType._id',
                         appointmentType_name: '$appointmentType.name',
                     }
@@ -214,10 +219,23 @@ let Service = () => {
         });
     };
 
+    let confirmAppointment = (ids) => {
+        return new blueBirdPromise((resolve, reject) => {
+            Appointment.update({_id: {$in: ids}}, {$set: {is_confirmed: true}}, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            })
+        });
+    };
+
     return {
         addAppointment: addAppointment,
         getAppointments: getAppointments,
-        getAppointmentsByType: getAppointmentsByType
+        getAppointmentsByType: getAppointmentsByType,
+        confirmAppointment: confirmAppointment
     }
 };
 module.exports = Service;

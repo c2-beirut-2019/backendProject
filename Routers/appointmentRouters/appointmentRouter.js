@@ -9,7 +9,11 @@ let router = () => {
         doctorAuthenticate = require('../../DoctorOAuth/authenticate');
 
     router.route('/all')
-        .get(appointmentController.getAllAppointments);
+        .get(appointmentController.getAllAppointments)
+        .post(validate(appointmentValidator.addCMSAppointment), appointmentController.addCMSAppointment);
+
+    router.route('/confirm')
+        .post(validate(appointmentValidator.confirmAppointment), appointmentController.confirmAppointment);
 
     router.use('/doctorAppointment', doctorAuthenticate());
     router.route('/doctorAppointment')

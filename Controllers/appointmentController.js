@@ -50,13 +50,39 @@ let Controller = () => {
         });
     };
 
+    let addCMSAppointment = (req, res) => {
+        appointmentService.addAppointment(null, req.body, true).then(() => {
+            res.status(200).send();
+        }).catch((err) => {
+            if (err === 'not_found') {
+                res.status(404).send(messagesService.not_found);
+            } else if (err === 'appointment_exists') {
+                res.status(409).send(messagesService.appointmentExists);
+            } else if (err === 'doctor_not_available') {
+                res.status(409).send(messagesService.doctorNotAvailable);
+            } else {
+                res.status(500).send(messagesService.serverError);
+            }
+        });
+    };
+
+    let confirmAppointment = (req, res) => {
+        appointmentService.confirmAppointment(req.body.users).then((results) => {
+            res.status(200).send(results);
+        }).catch((err) => {
+            res.status(500).send(messagesService.serverError);
+        });
+    };
+
 
     return {
         addAppointment: addAppointment,
         getAppointments: getAppointments,
         getUserAppointment: getUserAppointment,
         getDoctorsAppointment: getDoctorsAppointment,
-        getAllAppointments: getAllAppointments
+        getAllAppointments: getAllAppointments,
+        addCMSAppointment: addCMSAppointment,
+        confirmAppointment:confirmAppointment
 
     }
 };

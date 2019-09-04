@@ -20,6 +20,7 @@ let appointmentModel = new Schema({
     },
     startDate: Date,
     endDate: Date,
+    is_confirmed: {type: Boolean, default: false},
     __v: {type: Number, select: false}
 });
 module.exports = mongoose.model('Appointment', appointmentModel);
