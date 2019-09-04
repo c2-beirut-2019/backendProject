@@ -15,12 +15,13 @@ let petModel = new Schema({
         ref: 'User'
     },
     name: String,
-    image:String,
+    image: String,
     color: String,
     registrationDate: Date,
     dateOfBirth: Date,
     isToAdopt: {type: Boolean, default: false},
     isAdopted: {type: Boolean, default: false},
+    adoptedDate: Date,
     __v: {type: Number, select: false}
 });
 module.exports = mongoose.model('Pet', petModel);

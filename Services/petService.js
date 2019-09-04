@@ -414,7 +414,8 @@ let Service = () => {
                 $set: {
                     owner: body.owner,
                     isToAdopt: false,
-                    isAdopted: true
+                    isAdopted: true,
+                    adoptedDate: new Date()
                 }
             }, function (err) {
                 if (err) {
@@ -434,7 +435,8 @@ let Service = () => {
                     isAdopted: false
                 },
                 $unset: {
-                    owner: ''
+                    owner: '',
+                    adoptedDate: ''
                 }
             }, function (err) {
                 if (err) {
@@ -465,6 +467,7 @@ let Service = () => {
                         color: 1,
                         registrationDate: 1,
                         dateOfBirth: 1,
+                        adoptedDate: 1,
                         category_name: '$category.name',
                         category_id: '$category._id',
                         specie_name: '$specie.name',
