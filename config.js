@@ -13,5 +13,9 @@ module.exports = {
           ACL : "public-read",
           AWS_LINK : "animalHouse/",
           LINK:'https://s3.eu-west-1.amazonaws.com/animal-house-s3/'
-      }
+      },
+      mail: {
+              email: 'animalhouseteam1@gmail.com',
+              password: 'animalhouse0000'
+          },
 };

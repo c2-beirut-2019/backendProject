@@ -97,8 +97,8 @@ let paginateService = (model) => {
                 if (searchQuery.length > 0) {
                     aggregation.push({$match: {$or: searchQuery}});
                 }
-                if ((searchQuery.length > 0 && 'columnSearch' in AggOptions && Object.keys(AggOptions.columnSearch).length > 0)){
-                    matchQuery = {$match: {$and: [{$and: [AggOptions.columnSearch]},{$or: searchQuery}]}};
+                if ((searchQuery.length > 0 && 'columnSearch' in AggOptions && Object.keys(AggOptions.columnSearch).length > 0)) {
+                    matchQuery = {$match: {$and: [{$and: [AggOptions.columnSearch]}, {$or: searchQuery}]}};
                 }
             }
             aggregation.push({$sort: options.sort});
@@ -193,6 +193,52 @@ let paginateService = (model) => {
         });
     };
 
+    let getCMSData = (query, page, limit, sort, options = null) => {
+        const defaultLimit = 10, defaultPage = 1;
+
+        if (!limit || !Number.isInteger(parseInt(limit))) {
+            limit = defaultLimit;
+        } else {
+            limit = parseInt(limit);
+        }
+
+        if (!page || !Number.isInteger(parseInt(page))) {
+            page = defaultPage;
+        } else {
+            page = parseInt(page);
+        }
+
+        if (typeof (query) !== 'object') {
+            query = {}
+        }
+        let data = [];
+        let response = {
+            error: false,
+            data: data
+        };
+
+        if (options === null || typeof (options) !== 'object') {
+            options = {};
+        }
+        options.page = page;
+        options.limit = limit;
+        options.sort = sort;
+        options.lean = true;
+
+        return new bluebirdPromise((resolve) => {
+            model.paginate(query, options, (err, result) => {
+                if (err) {
+                    response.error = true
+                } else {
+                    response.data = result.docs;
+                    response.currentPage = parseInt(result.page);
+                    response.totalPages = result.pages;
+                }
+                resolve(response);
+            });
+        });
+    };
+
     return {
         getData: getData,
         getDataById: getDataById,
@@ -201,7 +247,8 @@ let paginateService = (model) => {
         findAndUpdateData: findAndUpdateData,
         deleteData: deleteData,
         deleteDataByQuery: deleteDataByQuery,
-        getAggregationData: getAggregationData
+        getAggregationData: getAggregationData,
+        getCMSData: getCMSData
     };
 };
 module.exports = paginateService;
