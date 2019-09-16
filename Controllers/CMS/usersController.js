@@ -1,6 +1,6 @@
 let usersController = () => {
     let errorMessagesService = require('../../Services/messagesService'),
-        usersService = require('../../Services/cms/usersService')();
+        usersService = require('../../Services/CMS/usersService')();
 
     let getUsers = (req, res) => {
         let query = {};
