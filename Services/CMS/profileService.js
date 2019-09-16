@@ -3,7 +3,7 @@ let profileService = () => {
         Profile = require('../../Models/CMS/profile'),
         Section = require('../../Models/CMS/section'),
         paginateService = require('../paginateService')(Profile),
-        sectionService = require('.//sectionService')(Section),
+        sectionService = require('./sectionService')(Section),
         async = require('async'),
         User = require('../../Models/CMS/user');
 
