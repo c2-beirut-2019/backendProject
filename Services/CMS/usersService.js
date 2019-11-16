@@ -5,6 +5,7 @@ let usersService = () => {
         emailService = require('../emailService')(),
         oAuthProvider = require('../../CMSUsersOauth/express')(),
         randomString = require('randomstring'),
+        config = require('../../config'),
         SHA256 = require("crypto-js/sha256");
     // gmailService = require('../../GmailApi/gmailService')();
 
@@ -44,7 +45,7 @@ let usersService = () => {
                 oAuthProvider.addUserOAuthClient(result._id, result.email).then(() => {
                     const subject = 'Animal House - Login Credentials';
                     const text = '<div>Welcome to Animal House,</div><br/>' +
-                        '<div>Start using the panel by following this link ( animalhousecms.com ).</div><br/>' +
+                        '<div>Start using the panel by following this link ( ' + config.mail.initialCMSLink + ' ).</div><br/>' +
                         '<div>Your login username is : ' + result.email + ' and your password is: ' + generatedPass + '</div><br/>' +
                         '<div>Cheers.</div>';
 

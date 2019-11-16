@@ -12,7 +12,7 @@ let clientValidator = {
             lastName: Joi.string().required(),
             speciality: Joi.string().required(),
             diplomas: Joi.string().required(),
-            dateOfBirth: Joi.date().optional().allow(null),
+            dateOfBirth: Joi.date().optional().allow(null).allow(''),
             phoneNumber: Joi.string().required()
         }
     },
@@ -26,7 +26,7 @@ let clientValidator = {
             lastName: Joi.string().required(),
             speciality: Joi.string().required(),
             diplomas: Joi.string().required(),
-            dateOfBirth: Joi.date().optional().allow(null),
+            dateOfBirth: Joi.date().optional().allow(null).allow(''),
             phoneNumber: Joi.string().required()
         }
     },

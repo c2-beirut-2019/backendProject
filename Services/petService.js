@@ -186,6 +186,7 @@ let Service = () => {
                         _id: 1,
                         name: 1,
                         color: 1,
+                        image: 1,
                         registrationDate: 1,
                         dateOfBirth: 1,
                         isAdopted: 1,
@@ -214,7 +215,7 @@ let Service = () => {
     let getLoggedInUserPets = (ownerID) => {
         return new blueBirdPromise((resolve, reject) => {
             let aggregation = [
-                {$match: {isToAdopt: false, isAdopted: false, owner: mongoose.Types.ObjectId(ownerID)}},
+                {$match: {isToAdopt: false,owner: mongoose.Types.ObjectId(ownerID)}},
                 {$lookup: {from: 'animal_species', localField: 'specie', foreignField: '_id', as: 'specie'}},
                 {$unwind: {path: '$specie', preserveNullAndEmptyArrays: true}},
                 {$lookup: {from: 'animal_categories', localField: 'category', foreignField: '_id', as: 'category'}},

@@ -9,7 +9,7 @@ let clientValidator = {
         body: {
             firstName: Joi.string().required(),
             lastName: Joi.string().required(),
-            dateOfBirth: Joi.date().optional().allow(null),
+            dateOfBirth: Joi.date().optional().allow(null).allow(''),
             phoneNumber: Joi.string().required(),
             referredBy: Joi.string().optional().allow(''),
             emergencyPerson: Joi.string().required(),
@@ -24,7 +24,7 @@ let clientValidator = {
         body: {
             firstName: Joi.string().required(),
             lastName: Joi.string().required(),
-            dateOfBirth: Joi.date().optional().allow(null),
+            dateOfBirth: Joi.date().optional().allow(null).allow(''),
             phoneNumber: Joi.string().required(),
             referredBy: Joi.string().optional().allow(''),
             emergencyPerson: Joi.string().required(),
@@ -83,7 +83,7 @@ let clientValidator = {
         body: {
             firstName: Joi.string().optional(),
             lastName: Joi.string().optional(),
-            dateOfBirth: Joi.date().optional().allow(null),
+            dateOfBirth: Joi.date().optional().allow(null).allow(''),
             phoneNumber: Joi.string().optional(),
             emergencyPerson: Joi.string().optional(),
             emergencyNumber: Joi.string().optional(),

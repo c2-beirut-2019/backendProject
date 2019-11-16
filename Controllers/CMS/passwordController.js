@@ -4,6 +4,7 @@ let passwordController = () => {
         User = require('../../Models/CMS/user'),
         emailService = require('../../Services/emailService')(),
         UserResetPassword = require('../../Models/CMS/userResetPassword'),
+        config = require('../../config'),
         randomString = require('randomstring'),
         mongoose = require('mongoose'),
         moment = require('moment'),
@@ -64,7 +65,7 @@ let passwordController = () => {
                 });
             },
             (token, date, user, done) => {
-                const link = 'http://localhost:4200/#/reset/' + token;
+                const link = config.mail.initialCMSLink + '#/reset/' + token;
                 const subject = 'Animal House - Password Reset';
                 const text = '<div>Hello ' + user.firstName + ' ' + user.lastName + '</div><br/>' +
                     '<div>Did you request to change your password? If yes, follow this link before ' + date + ' in order to reset your password: ' + link + '</div><br/>' +

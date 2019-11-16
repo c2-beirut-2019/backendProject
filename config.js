@@ -1,6 +1,5 @@
 module.exports = {
   mongodb: {
-      //database: 'mongodb://localhost:27017/AnimalHouse',
       database: 'mongodb://admin:d2RtE28MUV9AZXqc@localhost/AnimalHouse?authSource=admin',
       options:{}
     },
@@ -16,6 +15,7 @@ module.exports = {
       },
       mail: {
               email: 'animalhouseteam1@gmail.com',
-              password: 'animalhouse0000'
+              password: 'animalhouse0000',
+              initialCMSLink:'http://34.247.71.103/'
           },
 };
